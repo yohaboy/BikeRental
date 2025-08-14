@@ -20,9 +20,23 @@ class RegisterSerializer(serializers.ModelSerializer):
 class BikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bike
-        fields = "__all__"
+        fields = '__all__'
+        read_only_fields = ['owner']
+
+    def create(self, validated_data):
+        request = self.context.get('request', None)
+        if request and request.user.is_authenticated:
+            validated_data['owner'] = request.user
+        return super().create(validated_data)
 
 class RentalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rental
         fields = "__all__"
+        read_only_fields = ['user']
+
+    def create(self, validated_data):
+        request = self.context.get('request', None)
+        if request and request.user.is_authenticated:
+            validated_data['user'] = request.user
+        return super().create(validated_data)
