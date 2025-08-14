@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import NavBar from './components/NavBar'
 import HomePage from './pages/Home'
@@ -12,7 +10,7 @@ function App() {
     <>
       <div className='bg-gray-900 text-white min-h-screen'>
         <NavBar />
-        <div className='px-75'>
+        <div className='pt-16 px-75'>
           <HomePage />
         </div>
       </div>
