@@ -26,8 +26,9 @@ function Register() {
 
             if (response.ok) {
                 const data = await response.json();
-                setMessage("Registration successful! You can now log in.");
-                console.log("Registration successful:", data);
+                setTimeout(() => {
+                    window.location.href = "/login";
+                }, 500);
             } else {
                 const errorData = await response.json();
                 setMessage(`Registration failed: ${errorData.message || response.statusText}`);

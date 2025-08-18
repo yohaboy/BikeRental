@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FiSearch } from 'react-icons/fi';
 
 function HomePage() {
@@ -8,6 +8,34 @@ function HomePage() {
     price: "all",
     availability: "all"
   });
+  const [bikes, setBikes] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBikes = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/bikes/', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch bikes');
+        }
+
+        const data = await response.json();
+        setBikes(data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching bikes:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchBikes();
+  }, []);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -78,17 +106,21 @@ function HomePage() {
         </div>
       </div>
 
-      {/* biks */}
+      {/* Bikes */}
       <div className="w-full mt-4">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-          {Array.from({ length: 38 }).map((_, index) => (
-            <div key={index} className="flex flex-col gap-2 bg-gray-800 rounded-lg p-4 text-white">
-              <span className='w-70 h-40 bg-yellow-400 rounded'>Image</span>
-              <span>Mountain Bike - XF series-4</span>
-              <span>15$/hour</span>
-            </div>
-          ))}
-        </div>
+        {loading ? (
+          <p className="text-white">Loading bikes...</p>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+            {bikes.map((bike, index) => (
+              <div key={index} className="flex flex-col gap-2 bg-gray-800 rounded-lg p-4 text-white">
+                <span className='w-70 h-40 bg-yellow-400 rounded'>Image</span>
+                <span>{bike.brand} - {bike.model}</span>
+                <span>$ {bike.price_per_hour}/hr</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -28,6 +28,7 @@ function Login() {
                 localStorage.setItem('access_token', data.access);
                 localStorage.setItem('refresh_token', data.refresh);
                 setIsLoggedIn(true);
+                window.location.href = '/';
 
             } else {
                 console.error("Login failed:", response.statusText);
