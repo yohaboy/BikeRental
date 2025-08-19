@@ -31,7 +31,7 @@ class UserDetailView(APIView):
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
 
-class BikeListView(APIView):
+class MyBikeListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -43,6 +43,24 @@ class BikeListView(APIView):
         serializer = BikeSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save(owner=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class BikeListView(APIView):
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [IsAuthenticated()]
+        return [AllowAny()]
+
+    def get(self, request):
+        bikes = Bike.objects.all()
+        serialized_bikes = BikeSerializer(bikes, many=True)
+        return Response(serialized_bikes.data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        serializer = BikeSerializer(data=request.data , context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     

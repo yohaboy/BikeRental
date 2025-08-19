@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, Plus } from 'lucide-react';
+import RentalForm from '../components/RentalForm';
 
 function BikeRentalsDashboard() {
   const [activeTab, setActiveTab] = useState('rentals');
   const [rentals, setRentals] = useState([]);
   const [bikes, setBikes] = useState([]);
+  const [showRentalForm, setShowRentalForm] = useState(false);
 
   const apiCall = async (url, options = {}) => {
     const makeRequest = async (token) => {
@@ -112,7 +114,7 @@ function BikeRentalsDashboard() {
             const userDetails = await fetchUserDetails(rental.user);
             return {
               id: rental.id,
-              bikeImage: `https://via.placeholder.com/150?text=Bike+${rental.bike}`,
+              bikeImage: null,
               bikeName: bikeDetails ? `${bikeDetails.brand} ${bikeDetails.model}` : `Bike ${rental.bike}`,
               startTime: new Date(rental.start_time).toLocaleString(),
               endTime: new Date(rental.end_time).toLocaleString(),
@@ -135,7 +137,7 @@ function BikeRentalsDashboard() {
   useEffect(() => {
     const fetchBikes = async () => {
       try {
-        const response = await apiCall('http://127.0.0.1:8000/api/bikes/');
+        const response = await apiCall('http://127.0.0.1:8000/api/my_bikes/');
         
         if (!response || !response.ok) {
           throw new Error('Failed to fetch bikes');
@@ -146,10 +148,10 @@ function BikeRentalsDashboard() {
         const formattedBikes = data.map((bike) => ({
           id: bike.id,
           name: `${bike.brand} ${bike.model}`,
-          image: bike.image || `https://via.placeholder.com/300x200?text=${bike.brand}+${bike.model}`,
+          image: bike.image || null,
           status: bike.status || 'available',
-          category: bike.category || 'mountain',
-          rate: `${bike.hourly_rate}/hr`,
+          category: bike.type || 'mountain',
+          rate: `${bike.price_per_hour}/hr`,
           brand: bike.brand,
           model: bike.model,
           description: bike.description,
@@ -176,6 +178,14 @@ function BikeRentalsDashboard() {
       maintenance: 'bg-red-100 text-red-800 border-red-200',
     };
     return colors[status] || 'bg-gray-100 text-gray-800 border-gray-200';
+  };
+
+  const handleAddBikeClick = () => {
+    setShowRentalForm(true); 
+  };
+
+  const handleCloseForm = () => {
+    setShowRentalForm(false); 
   };
 
   return (
@@ -276,11 +286,34 @@ function BikeRentalsDashboard() {
           <div>
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-semibold text-gray-900">My Bikes</h3>
-              <button className="flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
+              <button
+                onClick={handleAddBikeClick}
+                className="flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+              >
                 <Plus className="w-4 h-4 mr-2" />
                 Add New Bike
               </button>
             </div>
+
+            {/* RentalForm */}
+            {showRentalForm && (
+              <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Add New Bike</h3>
+                  <RentalForm /> 
+                  <div className="flex justify-end mt-4">
+                    <button
+                      onClick={handleCloseForm}
+                      className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* bike cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {bikes.length > 0 ? (
                 bikes.map((bike) => (
