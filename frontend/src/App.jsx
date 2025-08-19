@@ -16,9 +16,13 @@ function AppContent() {
   const isHomePage = location.pathname === '/';
 
   return (
-    <div className='bg-gray-900 min-h-screen'>
+    <div className='bg-white min-h-screen'>
       <NavBar />
-      <div className={isHomePage ? 'pt-16 px-75' : ''}>
+      <div className={
+        isHomePage 
+          ? 'pt-4 sm:pt-6 md:pt-8 lg:pt-6 xl:pt-6 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20' 
+          : 'pt-4 sm:pt-6 md:pt-8 px-4 sm:px-6 md:px-8'
+      }>
         <Routes>
           <Route
             path="/"
