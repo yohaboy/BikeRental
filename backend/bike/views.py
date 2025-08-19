@@ -53,7 +53,7 @@ class BikeListView(APIView):
         return [AllowAny()]
 
     def get(self, request):
-        bikes = Bike.objects.all()
+        bikes = Bike.objects.filter(rental__isnull=True) 
         bike_type = request.query_params.get('type')
         max_price = request.query_params.get('price')
         search_term = request.query_params.get('search', '')
