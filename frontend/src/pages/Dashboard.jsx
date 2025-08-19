@@ -7,8 +7,17 @@ function BikeRentalsDashboard() {
   const [bikes, setBikes] = useState([]);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/rentals/')
-      .then((response) => response.json())
+    fetch('http://127.0.0.1:8000/api/rentals/', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Failed to fetch rentals');
+        }
+        return response.json();
+      })
       .then((data) => {
         const fetchBikeDetails = async (bikeId) => {
           try {
@@ -40,7 +49,6 @@ function BikeRentalsDashboard() {
               id: rental.id,
               bikeImage: `https://via.placeholder.com/150?text=Bike+${rental.bike}`,
               bikeName: bikeDetails ? `${bikeDetails.brand} ${bikeDetails.model}` : `Bike ${rental.bike}`,
-              customerName: userDetails ? userDetails.username : `User ${rental.user}`,
               startTime: new Date(rental.start_time).toLocaleString(),
               endTime: new Date(rental.end_time).toLocaleString(),
               duration: `${Math.round((new Date(rental.end_time) - new Date(rental.start_time)) / (1000 * 60 * 60))} hours`,
