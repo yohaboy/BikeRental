@@ -54,11 +54,26 @@ class BikeListView(APIView):
 
     def get(self, request):
         bikes = Bike.objects.all()
+        bike_type = request.query_params.get('type')
+        max_price = request.query_params.get('price')
+        search_term = request.query_params.get('search', '')
+        
+        if search_term:
+            bikes = bikes.filter(brand__icontains=search_term)
+        if bike_type:
+            bikes = bikes.filter(type=bike_type)
+        if max_price:
+            try:
+                max_price = float(max_price)
+                bikes = bikes.filter(price_per_hour__lte=max_price)
+            except ValueError:
+                return Response({"error": "Invalid price value"}, status=status.HTTP_400_BAD_REQUEST)
+
         serialized_bikes = BikeSerializer(bikes, many=True)
         return Response(serialized_bikes.data, status=status.HTTP_200_OK)
     
     def post(self, request):
-        serializer = BikeSerializer(data=request.data , context={'request': request})
+        serializer = BikeSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

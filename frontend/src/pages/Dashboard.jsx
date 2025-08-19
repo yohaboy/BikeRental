@@ -111,10 +111,12 @@ function BikeRentalsDashboard() {
         const formattedRentals = await Promise.all(
           data.map(async (rental) => {
             const bikeDetails = await fetchBikeDetails(rental.bike);
+            console.log('Bike Details:', bikeDetails);
             const userDetails = await fetchUserDetails(rental.user);
             return {
               id: rental.id,
               bikeImage: null,
+              biketype: bikeDetails ? bikeDetails.type : 'electric',
               bikeName: bikeDetails ? `${bikeDetails.brand} ${bikeDetails.model}` : `Bike ${rental.bike}`,
               startTime: new Date(rental.start_time).toLocaleString(),
               endTime: new Date(rental.end_time).toLocaleString(),
@@ -237,11 +239,19 @@ function BikeRentalsDashboard() {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <div className="flex-shrink-0 h-12 w-12 rounded-full overflow-hidden">
-                              <img src="/assets/bike1.jpg" alt="Electric bike" />
+                              {rental.biketype === "electric" ? (
+                                  <img src="/assets/bike1.jpg" alt="Electric bike" />
+                                ) : rental.biketype === "mountain" ? (
+                                  <img src="/assets/bike2.jpg" alt="Mountain bike" />
+                                ) : rental.biketype === "city" ? (
+                                  <img src="/assets/bike3.jpg" alt="City bike" />
+                                ) : (
+                                  <img src="/assets/bike4.jpg" alt="Other bike" />
+                              )}
                             </div>
                             <div className="ml-4">
                               <div className="text-sm font-medium text-gray-900">{rental.bikeName}</div>
-                              <div className="text-sm text-gray-500">mountain</div>
+                              <div className="text-sm text-gray-500">{rental.biketype}</div>
                             </div>
                           </div>
                         </td>

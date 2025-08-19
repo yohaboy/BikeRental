@@ -4,17 +4,24 @@ import { FiSearch } from 'react-icons/fi';
 function HomePage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilter, setSelectedFilter] = useState({
-    type: "all",
-    price: "all",
-    availability: "all"
+    type: "",
+    price: "",
+    search: ""
   });
   const [bikes, setBikes] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchBikes = async () => {
+
+      const query = new URLSearchParams({
+        type: selectedFilter.type,
+        price: selectedFilter.price,
+        search: searchTerm,
+      }).toString();
+
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/bikes/', {
+        const response = await fetch(`http://127.0.0.1:8000/api/bikes/?${query}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -35,7 +42,7 @@ function HomePage() {
     };
 
     fetchBikes();
-  }, []);
+  }, [searchTerm, selectedFilter]);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -78,11 +85,11 @@ function HomePage() {
                 onChange={handleFilterChange}
                 className="w-full p-2 rounded border border-gray-600 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="all">All Types</option>
-                <option value="electronics">Electronics</option>
-                <option value="clothing">Clothing</option>
-                <option value="books">Books</option>
-                <option value="home">Home & Garden</option>
+                <option value="">All Types</option>
+                <option value="electric">Electric</option>
+                <option value="mountain">Mountain</option>
+                <option value="road">Road</option>
+                <option value="city">City</option>
               </select>
             </div>
 
@@ -95,11 +102,11 @@ function HomePage() {
                 onChange={handleFilterChange}
                 className="w-full p-2 rounded border border-gray-600 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="all">All Prices</option>
-                <option value="under25">Under $25</option>
-                <option value="25to50">$25 - $50</option>
-                <option value="50to100">$50 - $100</option>
-                <option value="over100">Over $100</option>
+                <option value="">All Prices</option>
+                <option value="25">Under $25</option>
+                <option value="50">under $50</option>
+                <option value="100">under $100</option>
+                <option value="">Over $100</option>
               </select>
             </div>
           </div>
