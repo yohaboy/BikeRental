@@ -32,20 +32,17 @@ class UserDetailView(APIView):
 
 
 class BikeListView(APIView):
-    def get_permissions(self):
-        if self.request.method == 'POST':
-            return [IsAuthenticated()]
-        return [AllowAny()]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        bikes = Bike.objects.all()
+        bikes = Bike.objects.filter(owner=request.user)
         serialized_bikes = BikeSerializer(bikes, many=True)
         return Response(serialized_bikes.data, status=status.HTTP_200_OK)
     
     def post(self, request):
-        serializer = BikeSerializer(data=request.data , context={'request': request})
+        serializer = BikeSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(owner=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
