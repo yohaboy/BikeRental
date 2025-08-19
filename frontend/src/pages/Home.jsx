@@ -114,7 +114,17 @@ function HomePage() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
             {bikes.map((bike, index) => (
               <div key={index} className="flex flex-col gap-2 bg-gray-800 rounded-lg p-4 text-white">
-                <span className='w-70 h-40 bg-yellow-400 rounded'>Image</span>
+                  <span className="w-70 h-40 bg-yellow-400 rounded">
+                    {bike.type === "electric" ? (
+                      <img src="/assets/bike1.jpg" alt="Electric bike" />
+                    ) : bike.type === "mountain" ? (
+                      <img src="/assets/bike2.jpg" alt="Mountain bike" />
+                    ) : bike.type === "city" ? (
+                      <img src="/assets/bike3.jpg" alt="City bike" />
+                    ) : (
+                      <img src="/assets/bike4.jpg" alt="Other bike" />
+                    )}
+                  </span>
                 <span>{bike.brand} - {bike.model}</span>
                 <span>$ {bike.price_per_hour}/hr</span>
               </div>

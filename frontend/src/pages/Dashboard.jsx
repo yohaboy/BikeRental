@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, Plus } from 'lucide-react';
-import RentalForm from '../components/RentalForm';
+import BikeForm from '../components/BikeForm';
 
 function BikeRentalsDashboard() {
   const [activeTab, setActiveTab] = useState('rentals');
@@ -120,7 +120,7 @@ function BikeRentalsDashboard() {
               endTime: new Date(rental.end_time).toLocaleString(),
               duration: `${Math.round((new Date(rental.end_time) - new Date(rental.start_time)) / (1000 * 60 * 60))} hours`,
               total: `$${rental.total_cost}`,
-              status: rental.status ? 'completed' : 'active',
+              status: rental.status ? 'active' : 'completed',
             };
           })
         );
@@ -236,8 +236,8 @@ function BikeRentalsDashboard() {
                       <tr key={rental.id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <div className="flex-shrink-0 h-12 w-12">
-                              <img className="h-12 w-12 rounded-lg object-cover" src={rental.bikeImage} alt="Bike" />
+                            <div className="flex-shrink-0 h-12 w-12 rounded-full overflow-hidden">
+                              <img src="/assets/bike1.jpg" alt="Electric bike" />
                             </div>
                             <div className="ml-4">
                               <div className="text-sm font-medium text-gray-900">{rental.bikeName}</div>
@@ -300,7 +300,7 @@ function BikeRentalsDashboard() {
               <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
                 <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Add New Bike</h3>
-                  <RentalForm /> 
+                  <BikeForm /> 
                   <div className="flex justify-end mt-4">
                     <button
                       onClick={handleCloseForm}
@@ -319,14 +319,15 @@ function BikeRentalsDashboard() {
                 bikes.map((bike) => (
                   <div key={bike.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
                     <div className="aspect-w-16 aspect-h-9 bg-gray-100">
-                      <img 
-                        className="w-full h-48 object-cover" 
-                        src={bike.image} 
-                        alt={bike.name}
-                        onError={(e) => {
-                          e.target.src = `https://via.placeholder.com/300x200?text=${bike.brand}+${bike.model}`;
-                        }}
-                      />
+                        {bike.category === "electric" ? (
+                            <img src="/assets/bike1.jpg" alt="Electric bike" />
+                          ) : bike.category === "mountain" ? (
+                            <img src="/assets/bike2.jpg" alt="Mountain bike" />
+                          ) : bike.category === "city" ? (
+                            <img src="/assets/bike3.jpg" alt="City bike" />
+                          ) : (
+                            <img src="/assets/bike4.jpg" alt="Other bike" />
+                        )}
                     </div>
                     <div className="p-6">
                       <div className="flex items-start justify-between mb-2">
