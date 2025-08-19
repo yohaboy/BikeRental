@@ -191,7 +191,7 @@ function BikeRentalsDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Navigation Tabs */}
         <div className="mb-8">
@@ -203,7 +203,7 @@ function BikeRentalsDashboard() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                className={`py-2 px-1 border-b-2 font-medium text-md transition-colors ${
                   activeTab === tab.id
                     ? 'border-blue-500 text-blue-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -307,7 +307,7 @@ function BikeRentalsDashboard() {
 
             {/* RentalForm */}
             {showRentalForm && (
-              <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+              <div className="fixed inset-0 bg-gray-50 bg-opacity-50 flex items-center justify-center z-50">
                 <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Add New Bike</h3>
                   <BikeForm /> 
@@ -362,16 +362,7 @@ function BikeRentalsDashboard() {
                 ))
               ) : (
                 <div className="col-span-full text-center py-12">
-                  <div className="text-gray-400 mb-4">
-                    <svg className="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-                  </div>
                   <p className="text-gray-500 mb-4">You haven't added any bikes yet</p>
-                  <button className="flex items-center mx-auto px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Your First Bike
-                  </button>
                 </div>
               )}
             </div>
