@@ -1,54 +1,59 @@
-import React, { useState } from 'react';
-import { Calendar, Clock, DollarSign, Bike, Plus, Filter, Search, MoreVertical, TrendingUp, Users, MapPin } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calendar, Clock, Plus } from 'lucide-react';
 
 function BikeRentalsDashboard() {
   const [activeTab, setActiveTab] = useState('rentals');
+  const [rentals, setRentals] = useState([]);
+  const [bikes, setBikes] = useState([]);
 
-  const rentals = [
-    {
-      id: 1,
-      bikeImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC_0AHoLqAJPUsl_EW0OI0h9P-VRUkpi1N0ndvXl3H4Axo5MVYTEAGHoaVQBCmADkksS0-cUEMImiBDItjRVbUF2a0f1Wj_KwV0mhhViAGbvX148sqHXd2rL5zadH113VxThS_cwvc7s7Z3sY2tUAyrmo9xdhST__hR3jwOyhY8ffqrrvqamJehza1qAq9LWCop-5H7-n7Or4VsLGkkeXswQYpd1xz6u_Ewg1TsRV4Hlav4xyPMTOiR0-YouCT_Z4B7o5Ej2ZhHqyA',
-      bikeName: 'Canyon Ultimate CF SL',
-      customerName: 'Sarah Chen',
-      startTime: 'Mon, Jul 15, 2024, 10:00 AM',
-      endTime: 'Mon, Jul 15, 2024, 12:00 PM',
-      duration: '2 hours',
-      total: '$20',
-      status: 'completed'
-    },
-    {
-      id: 2,
-      bikeImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAwRNKCLbAEBnCZh7ZXXyL768p82vRwbnYoli704Gx52OF-GHc8N3sl9sNOlYHinwK9bwAX_TQxUfIyxVQCd6Pg6KuiaDGmoC-1pYHqVElSzt__vvQsG3ysHtnhBuzt_XJM9J3mecVq1muceV681bgBTFZLOgyLjAdEwBu0enaaJ5BuGcimrGoLS5E9UpoH90NedPXnVV8efFFJbJnrBmbl-0WXzIid-Y3PUBnVsQdqrHgPS9g-4fn-wLa9qL_Bcpt2ZpnQx54FQqo',
-      bikeName: 'Trek Domane SL 7',
-      customerName: 'Marcus Johnson',
-      startTime: 'Tue, Jul 16, 2024, 09:00 AM',
-      endTime: 'Tue, Jul 16, 2024, 11:00 AM',
-      duration: '2 hours',
-      total: '$25',
-      status: 'active'
-    },
-  ];
+  useEffect(() => {
+    fetch('http://127.0.0.1:8000/api/rentals/')
+      .then((response) => response.json())
+      .then((data) => {
+        const fetchBikeDetails = async (bikeId) => {
+          try {
+            const bikeResponse = await fetch(`http://127.0.0.1:8000/api/bikes/${bikeId}/`);
+            const bikeData = await bikeResponse.json();
+            return bikeData;
+          } catch (error) {
+            console.error(`Error fetching bike details for bike ID ${bikeId}:`, error);
+            return null;
+          }
+        };
 
-  const bikes = [
-    {
-      id: 1,
-      name: 'Canyon Ultimate CF SL',
-      category: 'Road Bike',
-      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC_0AHoLqAJPUsl_EW0OI0h9P-VRUkpi1N0ndvXl3H4Axo5MVYTEAGHoaVQBCmADkksS0-cUEMImiBDItjRVbUF2a0f1Wj_KwV0mhhViAGbvX148sqHXd2rL5zadH113VxThS_cwvc7s7Z3sY2tUAyrmo9xdhST__hR3jwOyhY8ffqrrvqamJehza1qAq9LWCop-5H7-n7Or4VsLGkkeXswQYpd1xz6u_Ewg1TsRV4Hlav4xyPMTOiR0-YouCT_Z4B7o5Ej2ZhHqyA',
-      status: 'available',
-      rate: '$12/hr',
-      location: 'Station A'
-    },
-    {
-      id: 2,
-      name: 'Trek Domane SL 7',
-      category: 'Endurance Road',
-      image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAwRNKCLbAEBnCZh7ZXXyL768p82vRwbnYoli704Gx52OF-GHc8N3sl9sNOlYHinwK9bwAX_TQxUfIyxVQCd6Pg6KuiaDGmoC-1pYHqVElSzt__vvQsG3ysHtnhBuzt_XJM9J3mecVq1muceV681bgBTFZLOgyLjAdEwBu0enaaJ5BuGcimrGoLS5E9UpoH90NedPXnVV8efFFJbJnrBmbl-0WXzIid-Y3PUBnVsQdqrHgPS9g-4fn-wLa9qL_Bcpt2ZpnQx54FQqo',
-      status: 'in-use',
-      rate: '$15/hr',
-      location: 'Station B'
-    },
-  ];
+        const fetchUserDetails = async (userId) => {
+          try {
+            const userResponse = await fetch(`http://127.0.0.1:8000/api/users/${userId}/`);
+            const userData = await userResponse.json();
+            return userData;
+          } catch (error) {
+            console.error(`Error fetching user details for user ID ${userId}:`, error);
+            return null;
+          }
+        };
+
+        const formattedRentals = Promise.all(
+          data.map(async (rental) => {
+            const bikeDetails = await fetchBikeDetails(rental.bike);
+            const userDetails = await fetchUserDetails(rental.user);
+            return {
+              id: rental.id,
+              bikeImage: `https://via.placeholder.com/150?text=Bike+${rental.bike}`,
+              bikeName: bikeDetails ? `${bikeDetails.brand} ${bikeDetails.model}` : `Bike ${rental.bike}`,
+              customerName: userDetails ? userDetails.username : `User ${rental.user}`,
+              startTime: new Date(rental.start_time).toLocaleString(),
+              endTime: new Date(rental.end_time).toLocaleString(),
+              duration: `${Math.round((new Date(rental.end_time) - new Date(rental.start_time)) / (1000 * 60 * 60))} hours`,
+              total: `$${rental.total_cost}`,
+              status: rental.status ? 'completed' : 'active',
+            };
+          })
+        );
+
+        formattedRentals.then((rentals) => setRentals(rentals));
+      })
+      .catch((error) => console.error('Error fetching rentals:', error));
+  }, []);
 
   const getStatusColor = (status) => {
     const colors = {
@@ -57,7 +62,7 @@ function BikeRentalsDashboard() {
       pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
       available: 'bg-green-100 text-green-800 border-green-200',
       'in-use': 'bg-blue-100 text-blue-800 border-blue-200',
-      maintenance: 'bg-red-100 text-red-800 border-red-200'
+      maintenance: 'bg-red-100 text-red-800 border-red-200',
     };
     return colors[status] || 'bg-gray-100 text-gray-800 border-gray-200';
   };
@@ -70,7 +75,7 @@ function BikeRentalsDashboard() {
           <nav className="flex space-x-8 border-b border-gray-200">
             {[
               { id: 'rentals', label: 'Rentals' },
-              { id: 'bikes', label: 'My Bikes' }
+              { id: 'bikes', label: 'My Bikes' },
             ].map((tab) => (
               <button
                 key={tab.id}
