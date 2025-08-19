@@ -18,6 +18,7 @@ class Rental(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField(null=True, blank=True)
     total_cost = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    status = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.user}--{self.bike.brand}"

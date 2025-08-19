@@ -8,12 +8,10 @@ import Register from './pages/Register';
 import BikeRentalsDashboard from './pages/Dashboard';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  useEffect(() => {
-    const accessToken = localStorage.getItem('access_token');
-    setIsLoggedIn(!!accessToken);
-  }, []);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return !!localStorage.getItem('access_token');
+  });
 
   return (
     <Router>
@@ -35,7 +33,7 @@ function App() {
             />
             <Route
               path="/dashboard"
-              element={isLoggedIn ? <BikeRentalsDashboard /> : <Navigate to="/login" />}
+              element={isLoggedIn ? <BikeRentalsDashboard /> : <Navigate to="/" />}
             />
           </Routes>
         </div>
