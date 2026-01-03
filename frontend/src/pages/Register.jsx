@@ -1,119 +1,169 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { UserPlus, Mail, Lock, User, AlertCircle, ArrowRight } from 'lucide-react';
 
 function Register() {
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [message, setMessage] = useState("");
+    const [formData, setFormData] = useState({
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+    });
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
+        setError('');
 
-        const registrationData = {
-            username: username,
-            email: email,
-            password: password,
-        };
+        if (formData.password !== formData.confirmPassword) {
+            setError('Passwords do not match');
+            setLoading(false);
+            return;
+        }
 
         try {
-            const response = await fetch("http://localhost:8000/api/register/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(registrationData),
+            const response = await fetch('http://127.0.0.1:8000/api/register/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: formData.username,
+                    email: formData.email,
+                    password: formData.password,
+                }),
             });
 
             if (response.ok) {
-                const data = await response.json();
-                setTimeout(() => {
-                    window.location.href = "/login";
-                }, 500);
+                navigate('/login');
             } else {
-                const errorData = await response.json();
-                setMessage(`Registration failed: ${errorData.message || response.statusText}`);
-                console.error("Registration failed:", errorData);
+                const data = await response.json();
+                setError(data.username?.[0] || data.email?.[0] || 'Registration failed');
             }
-        } catch (error) {
-            setMessage("An error occurred during registration.");
-            console.error("Error during registration:", error);
+        } catch (err) {
+            setError('Something went wrong. Please try again.');
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-white">
-            <div className="bg-white p-8 border rounded-lg shadow-lg w-full max-w-md">
-                <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
-                    Sign Up
-                </h2>
-                {message && (
-                    <p className="text-center text-sm text-red-500 mb-4">{message}</p>
-                )}
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label
-                            htmlFor="username"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            User Name
-                        </label>
-                        <input
-                            type="text"
-                            id="username"
-                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Enter a username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            required
-                        />
+        <div className="min-h-[80vh] flex items-center justify-center p-4">
+            <div className="w-full max-w-md">
+                <div className="bg-white rounded-[2.5rem] shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
+                    <div className="p-10">
+                        <div className="text-center mb-10">
+                            <div className="w-16 h-16 bg-cyan-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <UserPlus className="text-cyan-600" size={32} />
+                            </div>
+                            <h1 className="text-3xl font-black text-gray-900">Create Account</h1>
+                            <p className="text-gray-500 mt-2">Join BikeHub and start riding</p>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="space-y-5">
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                                    <User size={16} className="text-cyan-500" />
+                                    Username
+                                </label>
+                                <input
+                                    type="text"
+                                    name="username"
+                                    value={formData.username}
+                                    onChange={handleChange}
+                                    className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all font-medium"
+                                    placeholder="Choose a username"
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                                    <Mail size={16} className="text-cyan-500" />
+                                    Email Address
+                                </label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all font-medium"
+                                    placeholder="your@email.com"
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                                    <Lock size={16} className="text-cyan-500" />
+                                    Password
+                                </label>
+                                <input
+                                    type="password"
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all font-medium"
+                                    placeholder="••••••••"
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                                    <Lock size={16} className="text-cyan-500" />
+                                    Confirm Password
+                                </label>
+                                <input
+                                    type="password"
+                                    name="confirmPassword"
+                                    value={formData.confirmPassword}
+                                    onChange={handleChange}
+                                    className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all font-medium"
+                                    placeholder="••••••••"
+                                    required
+                                />
+                            </div>
+
+                            {error && (
+                                <div className="bg-red-50 border border-red-100 p-4 rounded-2xl flex items-center gap-3 text-red-700 text-sm font-medium animate-in fade-in slide-in-from-top-2">
+                                    <AlertCircle size={20} />
+                                    {error}
+                                </div>
+                            )}
+
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full bg-gray-900 hover:bg-cyan-600 text-white py-4 rounded-2xl font-black text-lg shadow-lg transition-all flex items-center justify-center gap-2 group transform active:scale-[0.98]"
+                            >
+                                {loading ? (
+                                    <div className="h-6 w-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                ) : (
+                                    <>
+                                        Sign Up
+                                        <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                                    </>
+                                )}
+                            </button>
+                        </form>
                     </div>
-                    <div className="mb-4">
-                        <label
-                            htmlFor="email"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            Email Address
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Enter your email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
+
+                    <div className="px-10 py-6 bg-gray-50 border-t border-gray-100 text-center">
+                        <p className="text-gray-500 font-medium">
+                            Already have an account?{' '}
+                            <Link to="/login" className="text-cyan-600 font-bold hover:underline">
+                                Log In
+                            </Link>
+                        </p>
                     </div>
-                    <div className="mb-4">
-                        <label
-                            htmlFor="password"
-                            className="block text-sm font-medium text-gray-700"
-                        >
-                            Password
-                        </label>
-                        <input
-                            type="password"
-                            id="password"
-                            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Create a password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <button
-                        type="submit"
-                        className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                    >
-                        Sign Up
-                    </button>
-                </form>
-                <p className="text-center text-sm text-gray-600 mt-4">
-                    Already have an account?{" "}
-                    <a href="/login" className="text-blue-500 hover:underline">
-                        Login
-                    </a>
-                </p>
+                </div>
             </div>
         </div>
     );

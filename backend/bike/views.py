@@ -53,7 +53,7 @@ class BikeListView(APIView):
         return [AllowAny()]
 
     def get(self, request):
-        bikes = Bike.objects.filter(rental__isnull=True) 
+        bikes = Bike.objects.filter(is_available=True) 
         bike_type = request.query_params.get('type')
         max_price = request.query_params.get('price')
         search_term = request.query_params.get('search', '')
@@ -75,7 +75,7 @@ class BikeListView(APIView):
     def post(self, request):
         serializer = BikeSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(owner=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -123,6 +123,34 @@ class RentalListView(APIView):
     def post(self, request):
         serializer = RentalSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            bike = serializer.validated_data['bike']
+            if not bike.is_available:
+                return Response({"error": "Bike is not available"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            rental = serializer.save(user=request.user)
+            bike.is_available = False
+            bike.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class RentalDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, pk):
+        try:
+            rental = Rental.objects.get(pk=pk, user=request.user)
+            if not rental.status:
+                return Response({"error": "Rental already completed"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            rental.status = False # Mark as completed
+            rental.end_time = request.data.get('end_time')
+            rental.total_cost = request.data.get('total_cost')
+            rental.save()
+            
+            bike = rental.bike
+            bike.is_available = True
+            bike.save()
+            
+            return Response(RentalSerializer(rental).data, status=status.HTTP_200_OK)
+        except Rental.DoesNotExist:
+            return Response({"error": "Rental not found"}, status=status.HTTP_404_NOT_FOUND)

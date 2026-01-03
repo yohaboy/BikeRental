@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
+import { Bike as BikeIcon, DollarSign, Tag, Info, CheckCircle } from 'lucide-react';
 
-const BikeForm = () => {
+const BikeForm = ({ onSuccess }) => {
     const [formData, setFormData] = useState({
         brand: '',
         model: '',
-        type: '',
+        type: 'city',
         price_per_hour: '',
     });
+    const [submitting, setSubmitting] = useState(false);
+    const [success, setSuccess] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
+        setFormData({ ...formData, [name]: value });
     };
 
     const apiCall = async (url, options = {}) => {
@@ -37,9 +37,7 @@ const BikeForm = () => {
                 try {
                     const refreshResponse = await fetch('http://127.0.0.1:8000/api/token/refresh/', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ refresh: refreshToken }),
                     });
 
@@ -54,7 +52,6 @@ const BikeForm = () => {
                         return null;
                     }
                 } catch (error) {
-                    console.error('Token refresh failed:', error);
                     localStorage.removeItem('access_token');
                     localStorage.removeItem('refresh_token');
                     window.location.href = '/login';
@@ -67,107 +64,126 @@ const BikeForm = () => {
                 return null;
             }
         }
-
         return response;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSubmitting(true);
         try {
             const response = await apiCall('http://127.0.0.1:8000/api/my_bikes/', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
             });
 
             if (response && response.ok) {
-                const data = await response.json();
-                console.log('Bike added successfully:', data);
-                setFormData({
-                    brand: '',
-                    model: '',
-                    type: '',
-                    price_per_hour: '',
-                });
-            } else {
-                console.error('Error adding bike:', response.statusText);
+                setSuccess(true);
+                setTimeout(() => {
+                    setSuccess(false);
+                    if (onSuccess) onSuccess();
+                }, 1500);
             }
         } catch (error) {
             console.error('Error adding bike:', error);
+        } finally {
+            setSubmitting(false);
         }
     };
 
     return (
-        <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Add Rental Bike</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                    <label htmlFor="brand" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                        <Tag size={16} className="text-cyan-500" />
                         Brand
                     </label>
                     <input
                         type="text"
-                        id="brand"
                         name="brand"
                         value={formData.brand}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="e.g. Trek, Giant"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
                         required
                     />
                 </div>
                 <div>
-                    <label htmlFor="model" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                        <Info size={16} className="text-cyan-500" />
                         Model
                     </label>
                     <input
                         type="text"
-                        id="model"
                         name="model"
                         value={formData.model}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="e.g. Domane, Escape"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
                         required
                     />
                 </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                    <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                        <BikeIcon size={16} className="text-cyan-500" />
                         Type
                     </label>
-                    <input
-                        type="text"
-                        id="type"
+                    <select
                         name="type"
                         value={formData.type}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all appearance-none"
                         required
-                    />
+                    >
+                        <option value="city">City</option>
+                        <option value="mountain">Mountain</option>
+                        <option value="road">Road</option>
+                        <option value="electric">Electric</option>
+                    </select>
                 </div>
                 <div>
-                    <label htmlFor="price_per_hour" className="block text-sm font-medium text-gray-700 mb-1">
-                        Price per Hour ($)
+                    <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
+                        <DollarSign size={16} className="text-cyan-500" />
+                        Price per Hour
                     </label>
-                    <input
-                        type="number"
-                        step="0.01"
-                        id="price_per_hour"
-                        name="price_per_hour"
-                        value={formData.price_per_hour}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
-                    />
+                    <div className="relative">
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">$</span>
+                        <input
+                            type="number"
+                            step="0.01"
+                            name="price_per_hour"
+                            value={formData.price_per_hour}
+                            onChange={handleChange}
+                            placeholder="0.00"
+                            className="w-full pl-8 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
+                            required
+                        />
+                    </div>
                 </div>
-                <button
-                    type="submit"
-                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                >
-                    Add Bike
-                </button>
-            </form>
-        </div>
+            </div>
+
+            {success && (
+                <div className="bg-green-50 border border-green-100 p-4 rounded-xl flex items-center gap-3 text-green-700 font-bold text-sm animate-in fade-in slide-in-from-top-2">
+                    <CheckCircle size={20} />
+                    Bike listed successfully!
+                </div>
+            )}
+
+            <button
+                type="submit"
+                disabled={submitting || success}
+                className={`w-full py-4 rounded-xl text-white font-black text-lg shadow-lg transition-all transform active:scale-[0.98] ${submitting || success
+                        ? 'bg-gray-300 cursor-not-allowed shadow-none'
+                        : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 hover:shadow-cyan-200'
+                    }`}
+            >
+                {submitting ? 'Listing...' : success ? 'Done!' : 'List My Bike'}
+            </button>
+        </form>
     );
 };
 

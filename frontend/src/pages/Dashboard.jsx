@@ -1,376 +1,327 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, Plus } from 'lucide-react';
+import { Calendar, Clock, Plus, CheckCircle, Bike as BikeIcon, ArrowRight, Trash2 } from 'lucide-react';
 import BikeForm from '../components/BikeForm';
 
 function BikeRentalsDashboard() {
-  const [activeTab, setActiveTab] = useState('rentals');
-  const [rentals, setRentals] = useState([]);
-  const [bikes, setBikes] = useState([]);
-  const [showRentalForm, setShowRentalForm] = useState(false);
+    const [activeTab, setActiveTab] = useState('rentals');
+    const [rentals, setRentals] = useState([]);
+    const [bikes, setBikes] = useState([]);
+    const [showBikeForm, setShowBikeForm] = useState(false);
+    const [loading, setLoading] = useState(true);
 
-  const apiCall = async (url, options = {}) => {
-    const makeRequest = async (token) => {
-      const response = await fetch(url, {
-        ...options,
-        headers: {
-          ...options.headers,
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response;
+    const apiCall = async (url, options = {}) => {
+        const makeRequest = async (token) => {
+            const response = await fetch(url, {
+                ...options,
+                headers: {
+                    ...options.headers,
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return response;
+        };
+
+        let accessToken = localStorage.getItem('access_token');
+        let response = await makeRequest(accessToken);
+
+        if (response.status === 401) {
+            const refreshToken = localStorage.getItem('refresh_token');
+            if (refreshToken) {
+                try {
+                    const refreshResponse = await fetch('http://127.0.0.1:8000/api/token/refresh/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ refresh: refreshToken }),
+                    });
+
+                    if (refreshResponse.ok) {
+                        const data = await refreshResponse.json();
+                        localStorage.setItem('access_token', data.access);
+                        response = await makeRequest(data.access);
+                    } else {
+                        localStorage.removeItem('access_token');
+                        localStorage.removeItem('refresh_token');
+                        window.location.href = '/login';
+                        return null;
+                    }
+                } catch (error) {
+                    localStorage.removeItem('access_token');
+                    localStorage.removeItem('refresh_token');
+                    window.location.href = '/login';
+                    return null;
+                }
+            } else {
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');
+                window.location.href = '/login';
+                return null;
+            }
+        }
+        return response;
     };
 
-    let accessToken = localStorage.getItem('access_token');
-    let response = await makeRequest(accessToken);
-
-    // If token expired, try to refresh
-    if (response.status === 401) {
-      const refreshToken = localStorage.getItem('refresh_token');
-      
-      if (refreshToken) {
-        try {
-          const refreshResponse = await fetch('http://127.0.0.1:8000/api/token/refresh/', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              refresh: refreshToken,
-            }),
-          });
-
-          if (refreshResponse.ok) {
-            const data = await refreshResponse.json();
-            localStorage.setItem('access_token', data.access);
-            response = await makeRequest(data.access);
-
-          } else {
-          
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('refresh_token');
-            window.location.href = '/login';
-            return null;
-          }
-        } catch (error) {
-          console.error('Token refresh failed:', error);
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('refresh_token');
-          window.location.href = '/login';
-          return null;
-        }
-      } else {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        window.location.href = '/login';
-        return null;
-      }
-    }
-
-    return response;
-  };
-
-  useEffect(() => {
     const fetchRentals = async () => {
-      try {
-        const response = await apiCall('http://127.0.0.1:8000/api/rentals/');
-        
-        if (!response || !response.ok) {
-          throw new Error('Failed to fetch rentals');
+        setLoading(true);
+        try {
+            const response = await apiCall('http://127.0.0.1:8000/api/rentals/');
+            if (response && response.ok) {
+                const data = await response.json();
+
+                const formattedRentals = await Promise.all(
+                    data.map(async (rental) => {
+                        const bikeResponse = await apiCall(`http://127.0.0.1:8000/api/bikes/${rental.bike}/`);
+                        const bikeDetails = bikeResponse && bikeResponse.ok ? await bikeResponse.json() : null;
+
+                        return {
+                            id: rental.id,
+                            bikeName: bikeDetails ? `${bikeDetails.brand} ${bikeDetails.model}` : `Bike ${rental.bike}`,
+                            bikeType: bikeDetails ? bikeDetails.type : 'unknown',
+                            startTime: new Date(rental.start_time).toLocaleString(),
+                            endTime: rental.end_time ? new Date(rental.end_time).toLocaleString() : 'N/A',
+                            total: rental.total_cost,
+                            status: rental.status ? 'active' : 'completed',
+                        };
+                    })
+                );
+                setRentals(formattedRentals);
+            }
+        } catch (error) {
+            console.error('Error fetching rentals:', error);
+        } finally {
+            setLoading(false);
         }
-
-        const data = await response.json();
-
-        const fetchBikeDetails = async (bikeId) => {
-          try {
-            const bikeResponse = await apiCall(`http://127.0.0.1:8000/api/bikes/${bikeId}/`);
-            if (bikeResponse && bikeResponse.ok) {
-              const bikeData = await bikeResponse.json();
-              return bikeData;
-            }
-            return null;
-          } catch (error) {
-            console.error(`Error fetching bike details for bike ID ${bikeId}:`, error);
-            return null;
-          }
-        };
-
-        const fetchUserDetails = async (userId) => {
-          try {
-            const userResponse = await apiCall(`http://127.0.0.1:8000/api/users/${userId}/`);
-            if (userResponse && userResponse.ok) {
-              const userData = await userResponse.json();
-              return userData;
-            }
-            return null;
-          } catch (error) {
-            console.error(`Error fetching user details for user ID ${userId}:`, error);
-            return null;
-          }
-        };
-
-        const formattedRentals = await Promise.all(
-          data.map(async (rental) => {
-            const bikeDetails = await fetchBikeDetails(rental.bike);
-            console.log('Bike Details:', bikeDetails);
-            const userDetails = await fetchUserDetails(rental.user);
-            return {
-              id: rental.id,
-              bikeImage: null,
-              biketype: bikeDetails ? bikeDetails.type : 'electric',
-              bikeName: bikeDetails ? `${bikeDetails.brand} ${bikeDetails.model}` : `Bike ${rental.bike}`,
-              startTime: new Date(rental.start_time).toLocaleString(),
-              endTime: new Date(rental.end_time).toLocaleString(),
-              duration: `${Math.round((new Date(rental.end_time) - new Date(rental.start_time)) / (1000 * 60 * 60))} hours`,
-              total: `$${rental.total_cost}`,
-              status: rental.status ? 'active' : 'completed',
-            };
-          })
-        );
-
-        setRentals(formattedRentals);
-      } catch (error) {
-        console.error('Error fetching rentals:', error);
-      }
     };
 
-    fetchRentals();
-  }, []);
-
-  useEffect(() => {
     const fetchBikes = async () => {
-      try {
-        const response = await apiCall('http://127.0.0.1:8000/api/my_bikes/');
-        
-        if (!response || !response.ok) {
-          throw new Error('Failed to fetch bikes');
+        setLoading(true);
+        try {
+            const response = await apiCall('http://127.0.0.1:8000/api/my_bikes/');
+            if (response && response.ok) {
+                const data = await response.json();
+                setBikes(data);
+            }
+        } catch (error) {
+            console.error('Error fetching bikes:', error);
+        } finally {
+            setLoading(false);
         }
-
-        const data = await response.json();
-        
-        const formattedBikes = data.map((bike) => ({
-          id: bike.id,
-          name: `${bike.brand} ${bike.model}`,
-          image: bike.image || null,
-          status: bike.status || 'available',
-          category: bike.type || 'mountain',
-          rate: `${bike.price_per_hour}/hr`,
-          brand: bike.brand,
-          model: bike.model,
-          description: bike.description,
-        }));
-
-        setBikes(formattedBikes);
-      } catch (error) {
-        console.error('Error fetching bikes:', error);
-      }
     };
 
-    if (activeTab === 'bikes') {
-      fetchBikes();
-    }
-  }, [activeTab]);
+    useEffect(() => {
+        if (activeTab === 'rentals') fetchRentals();
+        else fetchBikes();
+    }, [activeTab]);
 
-  const getStatusColor = (status) => {
-    const colors = {
-      completed: 'bg-green-100 text-green-800 border-green-200',
-      active: 'bg-blue-100 text-blue-800 border-blue-200',
-      pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-      available: 'bg-green-100 text-green-800 border-green-200',
-      'in-use': 'bg-blue-100 text-blue-800 border-blue-200',
-      maintenance: 'bg-red-100 text-red-800 border-red-200',
+    const handleReturnBike = async (rentalId) => {
+        const now = new Date().toISOString();
+        try {
+            const response = await apiCall(`http://127.0.0.1:8000/api/rentals/${rentalId}/`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    end_time: now,
+                    status: false
+                }),
+            });
+            if (response && response.ok) {
+                fetchRentals();
+            }
+        } catch (error) {
+            console.error('Error returning bike:', error);
+        }
     };
-    return colors[status] || 'bg-gray-100 text-gray-800 border-gray-200';
-  };
 
-  const handleAddBikeClick = () => {
-    setShowRentalForm(true); 
-  };
+    const handleDeleteBike = async (bikeId) => {
+        if (!window.confirm('Are you sure you want to delete this bike?')) return;
+        try {
+            const response = await apiCall(`http://127.0.0.1:8000/api/bikes/${bikeId}/`, {
+                method: 'DELETE',
+            });
+            if (response && response.ok) {
+                fetchBikes();
+            }
+        } catch (error) {
+            console.error('Error deleting bike:', error);
+        }
+    };
 
-  const handleCloseForm = () => {
-    setShowRentalForm(false); 
-  };
+    const getStatusStyle = (status) => {
+        if (status === 'active' || status === true) return 'bg-blue-100 text-blue-700 border-blue-200';
+        if (status === 'completed' || status === false) return 'bg-green-100 text-green-700 border-green-200';
+        return 'bg-gray-100 text-gray-700 border-gray-200';
+    };
 
-  return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Navigation Tabs */}
-        <div className="mb-8">
-          <nav className="flex space-x-8 border-b border-gray-200">
-            {[
-              { id: 'rentals', label: 'Rentals' },
-              { id: 'bikes', label: 'My Bikes' },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`py-2 px-1 border-b-2 font-medium text-md transition-colors ${
-                  activeTab === tab.id
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </nav>
-        </div>
-
-        {/* Rentals */}
-        {activeTab === 'rentals' && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-center">
-              <h3 className="text-lg font-semibold text-gray-900">Recent Rentals</h3>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bike Info</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rental Period</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {rentals.length > 0 ? (
-                    rentals.map((rental) => (
-                      <tr key={rental.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="flex-shrink-0 h-12 w-12 rounded-full overflow-hidden">
-                              {rental.biketype === "electric" ? (
-                                  <img src="/assets/bike1.jpg" alt="Electric bike" />
-                                ) : rental.biketype === "mountain" ? (
-                                  <img src="/assets/bike2.jpg" alt="Mountain bike" />
-                                ) : rental.biketype === "city" ? (
-                                  <img src="/assets/bike3.jpg" alt="City bike" />
-                                ) : (
-                                  <img src="/assets/bike4.jpg" alt="Other bike" />
-                              )}
-                            </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900">{rental.bikeName}</div>
-                              <div className="text-sm text-gray-500">{rental.biketype}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm text-gray-900 flex items-center">
-                            <Calendar className="w-4 h-4 mr-2 text-gray-400" />
-                            {rental.startTime.split(',')[0]}
-                          </div>
-                          <div className="text-sm text-gray-500 flex items-center">
-                            <Clock className="w-4 h-4 mr-2 text-gray-400" />
-                            {rental.startTime.split(', ').slice(-1)[0]} - {rental.endTime.split(', ').slice(-1)[0]}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {rental.duration}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {rental.total}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(rental.status)}`}>
-                            {rental.status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
-                        No rentals found
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* Bikes Tab */}
-        {activeTab === 'bikes' && (
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">My Bikes</h3>
-              <button
-                onClick={handleAddBikeClick}
-                className="flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Add New Bike
-              </button>
-            </div>
-
-            {/* RentalForm */}
-            {showRentalForm && (
-              <div className="fixed inset-0 bg-gray-50 bg-opacity-50 flex items-center justify-center z-50">
-                <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Add New Bike</h3>
-                  <BikeForm /> 
-                  <div className="flex justify-end mt-4">
-                    <button
-                      onClick={handleCloseForm}
-                      className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
-                    >
-                      Close
-                    </button>
-                  </div>
+    return (
+        <div className="min-h-screen bg-gray-50/50">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+                <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
+                    <div>
+                        <h1 className="text-3xl font-black text-gray-900 tracking-tight">Dashboard</h1>
+                        <p className="text-gray-500 mt-1">Manage your rentals and bikes in one place.</p>
+                    </div>
+                    <div className="flex bg-white p-1 rounded-xl shadow-sm border border-gray-200 w-fit">
+                        <button
+                            onClick={() => setActiveTab('rentals')}
+                            className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'rentals' ? 'bg-cyan-500 text-white shadow-md' : 'text-gray-500 hover:text-gray-700'
+                                }`}
+                        >
+                            My Rentals
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('bikes')}
+                            className={`px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'bikes' ? 'bg-cyan-500 text-white shadow-md' : 'text-gray-500 hover:text-gray-700'
+                                }`}
+                        >
+                            My Bikes
+                        </button>
+                    </div>
                 </div>
-              </div>
+
+                {activeTab === 'rentals' ? (
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left border-collapse">
+                                <thead>
+                                    <tr className="bg-gray-50/50 border-b border-gray-100">
+                                        <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-wider">Bike</th>
+                                        <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-wider">Period</th>
+                                        <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-wider">Cost</th>
+                                        <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-wider">Status</th>
+                                        <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-wider text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-50">
+                                    {loading ? (
+                                        <tr><td colSpan="5" className="px-6 py-10 text-center text-gray-400">Loading...</td></tr>
+                                    ) : rentals.length > 0 ? (
+                                        rentals.map((rental) => (
+                                            <tr key={rental.id} className="hover:bg-gray-50/50 transition-colors">
+                                                <td className="px-6 py-4">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center text-cyan-600">
+                                                            <BikeIcon size={20} />
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-bold text-gray-900">{rental.bikeName}</p>
+                                                            <p className="text-xs text-gray-500 capitalize">{rental.bikeType}</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <div className="flex flex-col gap-1">
+                                                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                                                            <Calendar size={14} className="text-gray-400" />
+                                                            {rental.startTime}
+                                                        </div>
+                                                        <div className="flex items-center gap-2 text-sm text-gray-400">
+                                                            <ArrowRight size={14} />
+                                                            {rental.endTime}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <p className="font-black text-gray-900">${rental.total}</p>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusStyle(rental.status)}`}>
+                                                        {rental.status}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 text-right">
+                                                    {rental.status === 'active' && (
+                                                        <button
+                                                            onClick={() => handleReturnBike(rental.id)}
+                                                            className="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm transition-all"
+                                                        >
+                                                            Return Bike
+                                                        </button>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr><td colSpan="5" className="px-6 py-10 text-center text-gray-400">No rentals found.</td></tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                ) : (
+                    <div>
+                        <div className="flex justify-between items-center mb-6">
+                            <h2 className="text-xl font-bold text-gray-900">My Listed Bikes</h2>
+                            <button
+                                onClick={() => setShowBikeForm(true)}
+                                className="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg transition-all"
+                            >
+                                <Plus size={18} />
+                                Add New Bike
+                            </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            {loading ? (
+                                <div className="col-span-full text-center py-10 text-gray-400">Loading...</div>
+                            ) : bikes.length > 0 ? (
+                                bikes.map((bike) => (
+                                    <div key={bike.id} className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden group hover:shadow-md transition-all">
+                                        <div className="h-40 bg-gray-100 relative overflow-hidden">
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                                            <div className="absolute top-3 right-3">
+                                                <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border bg-white ${bike.is_available ? 'text-green-600 border-green-100' : 'text-blue-600 border-blue-100'}`}>
+                                                    {bike.is_available ? 'Available' : 'Rented'}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center justify-center h-full text-gray-300 group-hover:scale-110 transition-transform duration-500">
+                                                <BikeIcon size={64} strokeWidth={1} />
+                                            </div>
+                                        </div>
+                                        <div className="p-5">
+                                            <div className="flex justify-between items-start mb-4">
+                                                <div>
+                                                    <h4 className="font-bold text-gray-900 text-lg">{bike.brand}</h4>
+                                                    <p className="text-sm text-gray-500">{bike.model}</p>
+                                                </div>
+                                                <p className="text-xl font-black text-cyan-600">${bike.price_per_hour}<span className="text-xs font-normal text-gray-400">/hr</span></p>
+                                            </div>
+                                            <div className="flex items-center justify-between pt-4 border-t border-gray-50">
+                                                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{bike.type}</span>
+                                                <button
+                                                    onClick={() => handleDeleteBike(bike.id)}
+                                                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="col-span-full bg-white rounded-2xl border-2 border-dashed border-gray-200 p-12 text-center">
+                                    <p className="text-gray-400 font-medium">You haven't listed any bikes yet.</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {/* Bike Form Modal */}
+            {showBikeForm && (
+                <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+                    <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
+                        <div className="px-8 py-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                            <h3 className="text-xl font-black text-gray-900">List a New Bike</h3>
+                            <button onClick={() => setShowBikeForm(false)} className="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+                        </div>
+                        <div className="p-8">
+                            <BikeForm onSuccess={() => { setShowBikeForm(false); fetchBikes(); }} />
+                        </div>
+                    </div>
+                </div>
             )}
-
-            {/* bike cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {bikes.length > 0 ? (
-                bikes.map((bike) => (
-                  <div key={bike.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
-                    <div className="aspect-w-16 aspect-h-9 bg-gray-100">
-                        {bike.category === "electric" ? (
-                            <img src="/assets/bike1.jpg" alt="Electric bike" />
-                          ) : bike.category === "mountain" ? (
-                            <img src="/assets/bike2.jpg" alt="Mountain bike" />
-                          ) : bike.category === "city" ? (
-                            <img src="/assets/bike3.jpg" alt="City bike" />
-                          ) : (
-                            <img src="/assets/bike4.jpg" alt="Other bike" />
-                        )}
-                    </div>
-                    <div className="p-6">
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <h4 className="text-lg font-medium text-gray-900 mb-1">{bike.name}</h4>
-                          {bike.description && (
-                            <p className="text-sm text-gray-600 mb-2">{bike.description}</p>
-                          )}
-                        </div>
-                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(bike.status)}`}>
-                          {bike.status}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between mt-4">
-                        <div className="flex items-center text-sm text-gray-500">
-                          <p className="text-sm text-gray-500">{bike.category}</p>
-                        </div>
-                        <div className="text-lg font-bold text-gray-900">{bike.rate}</div>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="col-span-full text-center py-12">
-                  <p className="text-gray-500 mb-4">You haven't added any bikes yet</p>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+        </div>
+    );
 }
 
 export default BikeRentalsDashboard;
