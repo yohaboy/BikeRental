@@ -1,123 +1,163 @@
-import { Bike, Menu, X, LogOut, User } from 'lucide-react';
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { Menu, X, Bike } from 'lucide-react';
 
 function NavBar() {
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const handleLogout = () => {
         logout();
         navigate('/login');
+        setMobileMenuOpen(false);
     };
 
     return (
-        <>
-            {/* Desktop Navbar */}
-            <nav className="hidden md:flex justify-between items-center bg-gradient-to-r from-cyan-600 to-blue-600 p-4 px-8 lg:px-12 sticky top-0 z-50 shadow-md">
-                <div className="flex items-center gap-6 lg:gap-8 text-white">
-                    <Link to="/" className="flex items-center space-x-2">
-                        <div className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center">
-                            <Bike className="w-5 h-5 text-white" />
+        <nav className="border-b-2 border-border bg-background sticky top-0 z-50">
+            <div className="max-w-7xl mx-auto px-6">
+                <div className="flex justify-between items-center h-16">
+                    {/* Logo - Minimal */}
+                    <Link to="/" className="flex items-center gap-3 group">
+                        <div className="w-8 h-8 border-2 border-foreground flex items-center justify-center group-hover:bg-foreground transition-all">
+                            <Bike className="text-foreground group-hover:text-background transition-all" size={18} strokeWidth={2} />
                         </div>
-                        <h1 className="text-2xl font-bold text-white">
-                            BikeHub
-                        </h1>
+                        <span className="font-bold text-lg uppercase tracking-wider">BikeHub</span>
                     </Link>
-                    <Link to="/" className="hover:text-blue-100 transition-colors">Home</Link>
-                    <Link to="/dashboard" className="hover:text-blue-100 transition-colors">Dashboard</Link>
-                </div>
-                <div className="flex items-center gap-4 lg:gap-6">
-                    {user ? (
-                        <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-2 text-white bg-white/10 px-3 py-1.5 rounded-full">
-                                <User size={18} />
-                                <span className="text-sm font-medium">Account</span>
-                            </div>
-                            <button
-                                onClick={handleLogout}
-                                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-white backdrop-blur-sm transition-all duration-200 border border-white/10 shadow-sm"
-                            >
-                                <LogOut size={18} />
-                                <span>Logout</span>
-                            </button>
-                        </div>
-                    ) : (
-                        <>
-                            <Link to='/register'>
-                                <button className="px-4 py-2 rounded-lg bg-white/20 hover:bg-white/30 backdrop-blur-sm transition-all duration-200 border border-white/30 shadow-sm text-white">
-                                    Sign Up
-                                </button>
-                            </Link>
-                            <Link to='/login'>
-                                <button className="px-4 py-2 rounded-lg bg-white text-cyan-700 hover:bg-cyan-50 transition-all duration-200 shadow-sm font-medium">
-                                    Log In
-                                </button>
-                            </Link>
-                        </>
-                    )}
-                </div>
-            </nav>
 
-            {/* Mobile Navbar */}
-            <nav className="md:hidden flex justify-between items-center bg-gradient-to-r from-cyan-600 to-blue-600 p-4 sticky top-0 z-50 shadow-md">
-                <Link to="/" className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center">
-                        <Bike className="w-5 h-5 text-white" />
+                    {/* Desktop Navigation */}
+                    <div className="hidden md:flex items-center gap-8">
+                        <Link
+                            to="/"
+                            className="text-sm font-medium uppercase tracking-wider hover:text-muted-foreground transition-all"
+                        >
+                            Home
+                        </Link>
+                        <Link
+                            to="/"
+                            className="text-sm font-medium uppercase tracking-wider hover:text-muted-foreground transition-all"
+                        >
+                            About
+                        </Link>
+                        <Link
+                            to="/"
+                            className="text-sm font-medium uppercase tracking-wider hover:text-muted-foreground transition-all"
+                        >
+                            Contact
+                        </Link>
+
+                        <div className="h-6 w-px bg-border"></div>
+
+                        {user ? (
+                            <>
+                                <Link
+                                    to="/dashboard"
+                                    className="text-sm font-medium uppercase tracking-wider hover:text-muted-foreground transition-all"
+                                >
+                                    Dashboard
+                                </Link>
+                                <button
+                                    onClick={handleLogout}
+                                    className="text-sm font-medium uppercase tracking-wider hover:text-muted-foreground transition-all"
+                                >
+                                    Logout
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <Link
+                                    to="/login"
+                                    className="text-sm font-medium uppercase tracking-wider hover:text-muted-foreground transition-all"
+                                >
+                                    Login
+                                </Link>
+                                <Link
+                                    to="/register"
+                                    className="px-4 py-2 border-2 border-foreground font-bold text-sm uppercase tracking-wider hover:bg-foreground hover:text-background transition-all"
+                                >
+                                    Register
+                                </Link>
+                            </>
+                        )}
                     </div>
-                    <h1 className="text-2xl font-bold text-white">
-                        BikeHub
-                    </h1>
-                </Link>
 
-                <button
-                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    className="p-2 text-white"
-                >
-                    {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                </button>
-            </nav>
+                    {/* Mobile menu button */}
+                    <button
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        className="md:hidden p-2 border-2 border-foreground hover:bg-foreground hover:text-background transition-all"
+                    >
+                        {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                    </button>
+                </div>
+            </div>
 
             {/* Mobile Menu */}
             {mobileMenuOpen && (
-                <div className="md:hidden fixed inset-0 z-40 bg-cyan-700/95 backdrop-blur-sm pt-20 px-6 flex flex-col">
-                    <div className="flex flex-col gap-6 text-white text-lg">
-                        <Link to="/" className="py-3 border-b border-cyan-600" onClick={() => setMobileMenuOpen(false)}>Home</Link>
-                        <Link to="/dashboard" className="py-3 border-b border-cyan-600" onClick={() => setMobileMenuOpen(false)}>Dashboard</Link>
-                    </div>
+                <div className="md:hidden border-t-2 border-border bg-background">
+                    <div className="px-6 py-4 space-y-4">
+                        <Link
+                            to="/"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="block text-sm font-medium uppercase tracking-wider hover:text-muted-foreground transition-all"
+                        >
+                            Home
+                        </Link>
+                        <Link
+                            to="/"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="block text-sm font-medium uppercase tracking-wider hover:text-muted-foreground transition-all"
+                        >
+                            About
+                        </Link>
+                        <Link
+                            to="/"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="block text-sm font-medium uppercase tracking-wider hover:text-muted-foreground transition-all"
+                        >
+                            Contact
+                        </Link>
 
-                    <div className="mt-8 flex flex-col gap-4">
+                        <div className="h-px bg-border"></div>
+
                         {user ? (
-                            <button
-                                className="w-full py-3 rounded-lg bg-red-500 text-white transition-all duration-200 font-medium flex items-center justify-center gap-2"
-                                onClick={() => {
-                                    handleLogout();
-                                    setMobileMenuOpen(false);
-                                }}
-                            >
-                                <LogOut size={20} />
-                                Logout
-                            </button>
+                            <>
+                                <Link
+                                    to="/dashboard"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className="block text-sm font-medium uppercase tracking-wider hover:text-muted-foreground transition-all"
+                                >
+                                    Dashboard
+                                </Link>
+                                <button
+                                    onClick={handleLogout}
+                                    className="block w-full text-left text-sm font-medium uppercase tracking-wider hover:text-muted-foreground transition-all"
+                                >
+                                    Logout
+                                </button>
+                            </>
                         ) : (
                             <>
-                                <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
-                                    <button className="w-full py-3 rounded-lg bg-white/20 hover:bg-white/30 backdrop-blur-sm transition-all duration-200 border border-white/30 text-white">
-                                        Sign Up
-                                    </button>
+                                <Link
+                                    to="/login"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className="block text-sm font-medium uppercase tracking-wider hover:text-muted-foreground transition-all"
+                                >
+                                    Login
                                 </Link>
-                                <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                                    <button className="w-full py-3 rounded-lg bg-white text-cyan-700 hover:bg-cyan-50 transition-all duration-200 font-medium">
-                                        Log In
-                                    </button>
+                                <Link
+                                    to="/register"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className="block px-4 py-2 border-2 border-foreground font-bold text-sm uppercase tracking-wider text-center hover:bg-foreground hover:text-background transition-all"
+                                >
+                                    Register
                                 </Link>
                             </>
                         )}
                     </div>
                 </div>
             )}
-        </>
+        </nav>
     );
 }
 

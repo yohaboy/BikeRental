@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, DollarSign, CheckCircle, AlertCircle } from 'lucide-react';
+import { Calendar, Clock, DollarSign, CheckCircle, AlertCircle, Bike } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '../lib/utils';
 
-const OrderForm = ({ bikeId }) => {
+const OrderForm = ({ bikeId, onSuccess }) => {
     const [bike, setBike] = useState(null);
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
@@ -133,7 +135,8 @@ const OrderForm = ({ bikeId }) => {
                 setEndTime('');
                 setTimeout(() => {
                     setSuccess(false);
-                    window.location.href = '/dashboard';
+                    if (onSuccess) onSuccess();
+                    else window.location.href = '/dashboard';
                 }, 2000);
             } else {
                 const errorData = await response.json();
@@ -149,8 +152,8 @@ const OrderForm = ({ bikeId }) => {
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center p-8">
-                <div className="h-10 w-10 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                <p className="text-cyan-600 font-medium">Fetching bike details...</p>
+                <div className="h-10 w-10 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+                <p className="text-primary font-bold animate-pulse">Fetching bike details...</p>
             </div>
         );
     }
@@ -160,88 +163,123 @@ const OrderForm = ({ bikeId }) => {
 
     return (
         <div className="w-full">
-            <div className="bg-cyan-50 border border-cyan-100 p-4 rounded-xl mb-6 flex items-center justify-between">
-                <div>
-                    <h3 className="text-lg font-bold text-cyan-900">{bike?.brand} {bike?.model}</h3>
-                    <p className="text-sm text-cyan-600 capitalize">{bike?.type} Bike</p>
+            <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-primary/5 border border-primary/10 p-6 rounded-2xl mb-8 flex items-center justify-between"
+            >
+                <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                        <Bike className="text-primary" size={24} />
+                    </div>
+                    <div>
+                        <h3 className="text-xl font-black text-gray-900 dark:text-white">{bike?.brand} {bike?.model}</h3>
+                        <p className="text-sm text-primary font-bold uppercase tracking-wider">{bike?.type} Bike</p>
+                    </div>
                 </div>
                 <div className="text-right">
-                    <p className="text-xs text-cyan-500 uppercase font-bold tracking-wider">Rate</p>
-                    <p className="text-xl font-black text-cyan-700">${bike?.price_per_hour}<span className="text-xs font-normal">/hr</span></p>
+                    <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest">Rate</p>
+                    <p className="text-2xl font-black text-gray-900 dark:text-white">${bike?.price_per_hour}<span className="text-sm font-medium text-gray-400">/hr</span></p>
                 </div>
-            </div>
+            </motion.div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="grid grid-cols-1 gap-4">
-                    <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-2">
-                            <Calendar size={16} className="text-cyan-500" />
+            <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">
                             Pickup Time
                         </label>
-                        <input
-                            type="datetime-local"
-                            value={startTime}
-                            onChange={(e) => setStartTime(e.target.value)}
-                            required
-                            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
-                        />
+                        <div className="relative">
+                            <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            <input
+                                type="datetime-local"
+                                value={startTime}
+                                onChange={(e) => setStartTime(e.target.value)}
+                                required
+                                className="w-full pl-12 pr-4 py-4 bg-gray-50/50 dark:bg-slate-800/50 border border-gray-200/50 dark:border-slate-700/50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-bold text-gray-900 dark:text-white"
+                            />
+                        </div>
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1.5 flex items-center gap-2">
-                            <Clock size={16} className="text-cyan-500" />
+                    <div className="space-y-2">
+                        <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">
                             Return Time
                         </label>
-                        <input
-                            type="datetime-local"
-                            value={endTime}
-                            onChange={(e) => setEndTime(e.target.value)}
-                            required
-                            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
-                        />
+                        <div className="relative">
+                            <Clock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            <input
+                                type="datetime-local"
+                                value={endTime}
+                                onChange={(e) => setEndTime(e.target.value)}
+                                required
+                                className="w-full pl-12 pr-4 py-4 bg-gray-50/50 dark:bg-slate-800/50 border border-gray-200/50 dark:border-slate-700/50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-bold text-gray-900 dark:text-white"
+                            />
+                        </div>
                     </div>
                 </div>
 
-                {duration && price !== null && (
-                    <div className="bg-gray-50 border border-gray-100 p-4 rounded-xl space-y-2">
-                        <div className="flex justify-between text-sm text-gray-600">
-                            <span>Duration</span>
-                            <span className="font-medium text-gray-900">{duration.hours}h {duration.minutes}m</span>
-                        </div>
-                        <div className="flex justify-between items-center pt-2 border-t border-gray-200">
-                            <span className="text-base font-bold text-gray-900">Total Price</span>
-                            <span className="text-2xl font-black text-cyan-600">${price.toFixed(2)}</span>
-                        </div>
-                    </div>
-                )}
+                <AnimatePresence>
+                    {duration && price !== null && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="bg-gray-50/50 dark:bg-slate-800/50 border border-gray-100 dark:border-slate-700 p-6 rounded-2xl space-y-4"
+                        >
+                            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 font-medium">
+                                <span>Duration</span>
+                                <span className="font-bold text-gray-900 dark:text-white">{duration.hours}h {duration.minutes}m</span>
+                            </div>
+                            <div className="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-slate-700">
+                                <span className="text-lg font-black text-gray-900 dark:text-white">Total Price</span>
+                                <span className="text-3xl font-black text-primary">${price.toFixed(2)}</span>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
-                {error && (
-                    <div className="bg-red-50 border border-red-100 p-3 rounded-xl flex items-center gap-3 text-red-700 text-sm">
-                        <AlertCircle size={18} />
-                        {error}
-                    </div>
-                )}
+                <AnimatePresence>
+                    {error && (
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            className="bg-red-500/10 border border-red-500/20 p-4 rounded-2xl flex items-center gap-3 text-red-500 text-sm font-bold"
+                        >
+                            <AlertCircle size={20} />
+                            {error}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
-                {success && (
-                    <div className="bg-green-50 border border-green-100 p-3 rounded-xl flex items-center gap-3 text-green-700 text-sm">
-                        <CheckCircle size={18} />
-                        Rental confirmed! Redirecting...
-                    </div>
-                )}
+                <AnimatePresence>
+                    {success && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="bg-green-500/10 border border-green-500/20 p-4 rounded-2xl flex items-center gap-3 text-green-600 text-sm font-bold"
+                        >
+                            <CheckCircle size={20} />
+                            Rental confirmed! Redirecting...
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
                 <button
                     type="submit"
                     disabled={submitting || !startTime || !endTime}
-                    className={`w-full py-4 rounded-xl text-white font-bold text-lg shadow-lg transition-all transform active:scale-[0.98] ${submitting || !startTime || !endTime
-                            ? 'bg-gray-300 cursor-not-allowed shadow-none'
-                            : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 hover:shadow-cyan-200'
-                        }`}
+                    className={cn(
+                        "w-full py-4 rounded-2xl text-white font-black text-lg shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-3",
+                        submitting || !startTime || !endTime
+                            ? "bg-gray-300 dark:bg-slate-700 cursor-not-allowed shadow-none text-gray-500 dark:text-gray-500"
+                            : "btn-primary"
+                    )}
                 >
                     {submitting ? (
-                        <div className="flex items-center justify-center gap-2">
+                        <>
                             <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                             Processing...
-                        </div>
+                        </>
                     ) : (
                         'Confirm Reservation'
                     )}
@@ -252,3 +290,4 @@ const OrderForm = ({ bikeId }) => {
 };
 
 export default OrderForm;
+

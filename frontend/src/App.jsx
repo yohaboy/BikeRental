@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
-import './App.css';
 import NavBar from './components/NavBar';
 import HomePage from './pages/Home';
 import Login from './pages/Login';
@@ -12,8 +11,8 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="h-12 w-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+      <div className="flex items-center justify-center min-h-screen clean-bg">
+        <div className="h-12 w-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -21,7 +20,7 @@ function AppContent() {
   const isLoggedIn = !!user;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen clean-bg">
       <NavBar />
       <main>
         <Routes>

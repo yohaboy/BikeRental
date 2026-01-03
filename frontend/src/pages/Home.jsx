@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, Bike as BikeIcon, ArrowRight, Star, Clock, MapPin } from 'lucide-react';
+import { Search, Filter, Bike as BikeIcon } from 'lucide-react';
 import OrderForm from '../components/OrderForm';
 
 function HomePage() {
@@ -44,147 +44,144 @@ function HomePage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50/50">
-            {/* Hero Section */}
-            <div className="bg-white border-b border-gray-100">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-                    <h1 className="text-5xl md:text-6xl font-black text-gray-900 tracking-tight mb-4">
-                        Ride the <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600">Future</span>
-                    </h1>
-                    <p className="text-xl text-gray-500 max-w-2xl mx-auto">
-                        Premium bike rentals for your next adventure. Explore the city with style and comfort.
-                    </p>
-                </div>
-            </div>
+        <div className="min-h-screen bg-background">
+            {/* Hero Section - Minimal, Text-Focused */}
+            <section className="border-b-2 border-border">
+                <div className="max-w-7xl mx-auto px-6 py-24">
+                    <div className="max-w-3xl">
+                        <h1 className="text-display mb-6">
+                            BIKE RENTAL
+                        </h1>
+                        <p className="text-body text-muted-foreground mb-12 max-w-xl">
+                            Simple, straightforward bike rental. Browse available bikes, select your dates, and ride.
+                        </p>
 
-            {/* Search & Filters */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
-                <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 p-6 md:p-8">
-                    <div className="flex flex-col lg:flex-row gap-6">
-                        <div className="flex-1 relative">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                            <input
-                                type="text"
-                                placeholder="Search by brand or model..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all font-medium"
-                            />
-                        </div>
-                        <div className="flex flex-col sm:flex-row gap-4">
-                            <div className="relative">
-                                <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                        {/* Search Bar - Minimal Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-px bg-border border-2 border-border">
+                            <div className="bg-background p-4">
+                                <label className="block text-xs font-bold mb-2 uppercase tracking-wider">Search</label>
+                                <input
+                                    type="text"
+                                    placeholder="Brand or model"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className="w-full bg-transparent border-none focus:outline-none text-sm"
+                                />
+                            </div>
+
+                            <div className="bg-background p-4">
+                                <label className="block text-xs font-bold mb-2 uppercase tracking-wider">Type</label>
                                 <select
                                     value={selectedFilter.type}
                                     onChange={(e) => setSelectedFilter(prev => ({ ...prev, type: e.target.value }))}
-                                    className="pl-12 pr-10 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all font-medium appearance-none min-w-[160px]"
+                                    className="w-full bg-transparent border-none focus:outline-none text-sm appearance-none"
                                 >
-                                    <option value="">All Types</option>
+                                    <option value="">All</option>
                                     <option value="electric">Electric</option>
                                     <option value="mountain">Mountain</option>
                                     <option value="road">Road</option>
                                     <option value="city">City</option>
                                 </select>
                             </div>
-                            <div className="relative">
-                                <Clock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+
+                            <div className="bg-background p-4">
+                                <label className="block text-xs font-bold mb-2 uppercase tracking-wider">Price</label>
                                 <select
                                     value={selectedFilter.price}
                                     onChange={(e) => setSelectedFilter(prev => ({ ...prev, price: e.target.value }))}
-                                    className="pl-12 pr-10 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all font-medium appearance-none min-w-[160px]"
+                                    className="w-full bg-transparent border-none focus:outline-none text-sm appearance-none"
                                 >
-                                    <option value="">All Prices</option>
+                                    <option value="">All</option>
                                     <option value="25">Under $25/hr</option>
                                     <option value="50">Under $50/hr</option>
                                     <option value="100">Under $100/hr</option>
                                 </select>
                             </div>
+
+                            <button className="bg-primary text-primary-foreground p-4 font-bold text-sm uppercase tracking-wider hover:bg-transparent hover:text-primary transition-all border-2 border-transparent hover:border-primary">
+                                Filter
+                            </button>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            {/* Main Content */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                {loading ? (
-                    <div className="flex flex-col items-center justify-center py-20">
-                        <div className="h-12 w-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                        <p className="text-gray-500 font-medium">Finding the best rides for you...</p>
+            {/* Bikes Grid - Minimal, Information-Dense */}
+            <section className="py-16">
+                <div className="max-w-7xl mx-auto px-6">
+                    <div className="flex justify-between items-baseline mb-8 pb-4 border-b-2 border-border">
+                        <h2 className="text-heading">Available Bikes</h2>
+                        <p className="text-sm text-muted-foreground">{bikes.length} bikes</p>
                     </div>
-                ) : bikes.length === 0 ? (
-                    <div className="text-center py-20 bg-white rounded-3xl border-2 border-dashed border-gray-200">
-                        <BikeIcon size={48} className="mx-auto text-gray-300 mb-4" />
-                        <h3 className="text-xl font-bold text-gray-900">No bikes found</h3>
-                        <p className="text-gray-500">Try adjusting your search or filters to find more options.</p>
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                        {bikes.map((bike) => (
-                            <div key={bike.id} className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden group hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                                <div className="h-56 bg-gray-100 relative overflow-hidden">
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                    <div className="absolute top-4 left-4">
-                                        <span className="px-3 py-1.5 bg-white/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-wider text-cyan-600 shadow-sm">
-                                            {bike.type}
-                                        </span>
+
+                    {loading ? (
+                        <div className="flex items-center justify-center py-20">
+                            <div className="text-center">
+                                <div className="inline-block h-8 w-8 border-2 border-foreground border-t-transparent animate-spin mb-4"></div>
+                                <p className="text-sm text-muted-foreground">Loading...</p>
+                            </div>
+                        </div>
+                    ) : bikes.length === 0 ? (
+                        <div className="text-center py-20 border-2 border-border">
+                            <BikeIcon size={48} className="mx-auto text-muted-foreground mb-4" strokeWidth={1.5} />
+                            <p className="text-muted-foreground">No bikes found</p>
+                        </div>
+                    ) : (
+                        <div className="grid-minimal">
+                            {bikes.map((bike) => (
+                                <div key={bike.id} className="p-6 hover:bg-muted transition-all group">
+                                    {/* Bike Icon */}
+                                    <div className="mb-6 flex items-center justify-center h-32 border-2 border-border group-hover:border-foreground transition-all">
+                                        <BikeIcon size={64} strokeWidth={1} className="text-muted-foreground group-hover:text-foreground transition-all" />
                                     </div>
-                                    <div className="flex items-center justify-center h-full text-gray-300 group-hover:scale-110 transition-transform duration-700">
-                                        <BikeIcon size={80} strokeWidth={1} />
-                                    </div>
-                                </div>
-                                <div className="p-6">
-                                    <div className="flex justify-between items-start mb-2">
-                                        <h3 className="text-xl font-bold text-gray-900 group-hover:text-cyan-600 transition-colors">
-                                            {bike.brand} {bike.model}
-                                        </h3>
-                                    </div>
-                                    <div className="flex items-center gap-4 text-sm text-gray-500 mb-6">
-                                        <div className="flex items-center gap-1">
-                                            <Star size={14} className="text-yellow-400 fill-yellow-400" />
-                                            <span className="font-bold text-gray-700">4.9</span>
-                                        </div>
-                                        <div className="flex items-center gap-1">
-                                            <MapPin size={14} />
-                                            <span>2.4 km</span>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center justify-between pt-4 border-t border-gray-50">
+
+                                    {/* Bike Info - Structured Data */}
+                                    <div className="space-y-3">
                                         <div>
-                                            <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Price</p>
-                                            <p className="text-2xl font-black text-gray-900">${bike.price_per_hour}<span className="text-sm font-normal text-gray-400">/hr</span></p>
+                                            <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Model</p>
+                                            <h3 className="font-bold text-lg">{bike.brand} {bike.model}</h3>
                                         </div>
+
+                                        <div className="grid grid-cols-2 gap-4 text-sm">
+                                            <div>
+                                                <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Type</p>
+                                                <p className="font-medium capitalize">{bike.type}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Rate</p>
+                                                <p className="font-bold">${bike.price_per_hour}/hr</p>
+                                            </div>
+                                        </div>
+
                                         <button
                                             onClick={() => handleOrderClick(bike.id)}
-                                            className="bg-gray-900 hover:bg-cyan-600 text-white p-3 rounded-2xl shadow-lg transition-all transform active:scale-90"
+                                            className="w-full mt-4 py-3 border-2 border-foreground font-bold text-sm uppercase tracking-wider hover:bg-foreground hover:text-background transition-all"
                                         >
-                                            <ArrowRight size={20} />
+                                            Reserve
                                         </button>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </section>
 
-            {/* Order Modal */}
+            {/* Order Modal - Minimal */}
             {showOrderForm && (
-                <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
-                    <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
-                        <div className="px-10 py-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-                            <div>
-                                <h3 className="text-2xl font-black text-gray-900">Reserve Your Ride</h3>
-                                <p className="text-sm text-gray-500">Quick and easy bike rental</p>
-                            </div>
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-background/95">
+                    <div className="w-full max-w-2xl border-2 border-foreground bg-background">
+                        <div className="border-b-2 border-foreground p-6 flex justify-between items-center">
+                            <h3 className="text-xl font-bold uppercase tracking-wider">Reserve Bike</h3>
                             <button
                                 onClick={() => setShowOrderForm(false)}
-                                className="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-100 text-gray-400 hover:text-red-500 hover:border-red-100 transition-all text-2xl"
+                                className="text-2xl hover:text-muted-foreground transition-all"
                             >
-                                &times;
+                                ×
                             </button>
                         </div>
-                        <div className="p-10">
-                            <OrderForm bikeId={selectedBikeId} />
+                        <div className="p-6">
+                            <OrderForm bikeId={selectedBikeId} onSuccess={() => setShowOrderForm(false)} />
                         </div>
                     </div>
                 </div>

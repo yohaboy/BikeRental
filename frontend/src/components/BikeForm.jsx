@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Bike as BikeIcon, DollarSign, Tag, Info, CheckCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '../lib/utils';
 
 const BikeForm = ({ onSuccess }) => {
     const [formData, setFormData] = useState({
@@ -94,64 +96,69 @@ const BikeForm = ({ onSuccess }) => {
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                        <Tag size={16} className="text-cyan-500" />
+                <div className="space-y-2">
+                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">
                         Brand
                     </label>
-                    <input
-                        type="text"
-                        name="brand"
-                        value={formData.brand}
-                        onChange={handleChange}
-                        placeholder="e.g. Trek, Giant"
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
-                        required
-                    />
+                    <div className="relative">
+                        <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                        <input
+                            type="text"
+                            name="brand"
+                            value={formData.brand}
+                            onChange={handleChange}
+                            placeholder="e.g. Trek, Giant"
+                            className="w-full pl-12 pr-4 py-4 bg-gray-50/50 dark:bg-slate-800/50 border border-gray-200/50 dark:border-slate-700/50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-bold text-gray-900 dark:text-white"
+                            required
+                        />
+                    </div>
                 </div>
-                <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                        <Info size={16} className="text-cyan-500" />
+                <div className="space-y-2">
+                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">
                         Model
                     </label>
-                    <input
-                        type="text"
-                        name="model"
-                        value={formData.model}
-                        onChange={handleChange}
-                        placeholder="e.g. Domane, Escape"
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
-                        required
-                    />
+                    <div className="relative">
+                        <Info className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                        <input
+                            type="text"
+                            name="model"
+                            value={formData.model}
+                            onChange={handleChange}
+                            placeholder="e.g. Domane, Escape"
+                            className="w-full pl-12 pr-4 py-4 bg-gray-50/50 dark:bg-slate-800/50 border border-gray-200/50 dark:border-slate-700/50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-bold text-gray-900 dark:text-white"
+                            required
+                        />
+                    </div>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                        <BikeIcon size={16} className="text-cyan-500" />
+                <div className="space-y-2">
+                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">
                         Type
                     </label>
-                    <select
-                        name="type"
-                        value={formData.type}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all appearance-none"
-                        required
-                    >
-                        <option value="city">City</option>
-                        <option value="mountain">Mountain</option>
-                        <option value="road">Road</option>
-                        <option value="electric">Electric</option>
-                    </select>
+                    <div className="relative">
+                        <BikeIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                        <select
+                            name="type"
+                            value={formData.type}
+                            onChange={handleChange}
+                            className="w-full pl-12 pr-4 py-4 bg-gray-50/50 dark:bg-slate-800/50 border border-gray-200/50 dark:border-slate-700/50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-bold text-gray-900 dark:text-white appearance-none"
+                            required
+                        >
+                            <option value="city">City</option>
+                            <option value="mountain">Mountain</option>
+                            <option value="road">Road</option>
+                            <option value="electric">Electric</option>
+                        </select>
+                    </div>
                 </div>
-                <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                        <DollarSign size={16} className="text-cyan-500" />
+                <div className="space-y-2">
+                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">
                         Price per Hour
                     </label>
                     <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">$</span>
+                        <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                         <input
                             type="number"
                             step="0.01"
@@ -159,32 +166,54 @@ const BikeForm = ({ onSuccess }) => {
                             value={formData.price_per_hour}
                             onChange={handleChange}
                             placeholder="0.00"
-                            className="w-full pl-8 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all"
+                            className="w-full pl-12 pr-4 py-4 bg-gray-50/50 dark:bg-slate-800/50 border border-gray-200/50 dark:border-slate-700/50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-bold text-gray-900 dark:text-white"
                             required
                         />
                     </div>
                 </div>
             </div>
 
-            {success && (
-                <div className="bg-green-50 border border-green-100 p-4 rounded-xl flex items-center gap-3 text-green-700 font-bold text-sm animate-in fade-in slide-in-from-top-2">
-                    <CheckCircle size={20} />
-                    Bike listed successfully!
-                </div>
-            )}
+            <AnimatePresence>
+                {success && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        className="bg-green-500/10 border border-green-500/20 p-4 rounded-2xl flex items-center gap-3 text-green-600 font-bold text-sm"
+                    >
+                        <CheckCircle size={20} />
+                        Bike listed successfully!
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             <button
                 type="submit"
                 disabled={submitting || success}
-                className={`w-full py-4 rounded-xl text-white font-black text-lg shadow-lg transition-all transform active:scale-[0.98] ${submitting || success
-                        ? 'bg-gray-300 cursor-not-allowed shadow-none'
-                        : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 hover:shadow-cyan-200'
-                    }`}
+                className={cn(
+                    "w-full py-4 rounded-2xl text-white font-black text-lg shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-3",
+                    submitting || success
+                        ? "bg-gray-300 dark:bg-slate-700 cursor-not-allowed shadow-none text-gray-500 dark:text-gray-500"
+                        : "btn-primary"
+                )}
             >
-                {submitting ? 'Listing...' : success ? 'Done!' : 'List My Bike'}
+                {submitting ? (
+                    <>
+                        <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        Listing...
+                    </>
+                ) : success ? (
+                    <>
+                        <CheckCircle size={20} />
+                        Done!
+                    </>
+                ) : (
+                    'List My Bike'
+                )}
             </button>
         </form>
     );
 };
 
 export default BikeForm;
+
