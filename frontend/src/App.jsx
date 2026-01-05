@@ -11,7 +11,7 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen clean-bg">
+      <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="h-12 w-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
@@ -20,7 +20,7 @@ function AppContent() {
   const isLoggedIn = !!user;
 
   return (
-    <div className="min-h-screen clean-bg">
+    <div className="min-h-screen bg-background">
       <NavBar />
       <main>
         <Routes>

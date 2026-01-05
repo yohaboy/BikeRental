@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, DollarSign, CheckCircle, AlertCircle, Bike, X } from 'lucide-react';
+import { Calendar, Clock, DollarSign, CheckCircle, AlertCircle, Bike } from 'lucide-react';
 
 const OrderForm = ({ bikeId, onSuccess }) => {
     const [bike, setBike] = useState(null);
@@ -162,8 +162,8 @@ const OrderForm = ({ bikeId, onSuccess }) => {
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center p-8">
-                <div className="h-10 w-10 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
-                <p className="text-primary font-bold">Loading bike details...</p>
+                <div className="h-8 w-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+                <p className="text-muted-foreground font-medium">Loading bike details...</p>
             </div>
         );
     }
@@ -174,18 +174,18 @@ const OrderForm = ({ bikeId, onSuccess }) => {
     return (
         <div className="w-full">
             {/* Bike Info */}
-            <div className="bg-muted border-2 border-border p-6 mb-6">
+            <div className="bg-muted/50 rounded-xl border border-border/50 p-4 mb-6">
                 <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-primary/10 border-2 border-primary flex items-center justify-center">
+                    <div className="w-12 h-12 bg-card rounded-lg border border-border/50 flex items-center justify-center">
                         <Bike className="text-primary" size={24} />
                     </div>
                     <div>
-                        <h3 className="text-xl font-bold">{bike?.brand} {bike?.model}</h3>
-                        <p className="text-sm text-muted-foreground uppercase tracking-wider">{bike?.type} Bike</p>
+                        <h3 className="font-bold text-foreground">{bike?.brand} {bike?.model}</h3>
+                        <p className="text-sm text-muted-foreground capitalize">{bike?.type} Bike</p>
                     </div>
                     <div className="ml-auto text-right">
-                        <p className="text-xs uppercase tracking-wider text-muted-foreground">Rate</p>
-                        <p className="text-2xl font-bold text-primary">${bike?.price_per_hour}<span className="text-sm font-normal text-muted-foreground">/hr</span></p>
+                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Rate</p>
+                        <p className="text-xl font-bold text-primary">${bike?.price_per_hour}<span className="text-sm font-normal text-muted-foreground">/hr</span></p>
                     </div>
                 </div>
             </div>
@@ -196,93 +196,101 @@ const OrderForm = ({ bikeId, onSuccess }) => {
                     {/* Start Date & Time */}
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-xs font-bold mb-2 uppercase tracking-wider text-muted-foreground">
-                                <Calendar size={14} className="inline mr-1" />
+                            <label className="block text-sm font-medium text-foreground mb-1.5">
                                 Pickup Date
                             </label>
-                            <input
-                                type="date"
-                                value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
-                                min={new Date().toISOString().split('T')[0]}
-                                required
-                                className="input-shadow"
-                            />
+                            <div className="relative">
+                                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+                                <input
+                                    type="date"
+                                    value={startDate}
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                    min={new Date().toISOString().split('T')[0]}
+                                    required
+                                    className="input-shadow pl-10"
+                                />
+                            </div>
                         </div>
                         <div>
-                            <label className="block text-xs font-bold mb-2 uppercase tracking-wider text-muted-foreground">
-                                <Clock size={14} className="inline mr-1" />
+                            <label className="block text-sm font-medium text-foreground mb-1.5">
                                 Pickup Time
                             </label>
-                            <input
-                                type="time"
-                                value={startTime}
-                                onChange={(e) => setStartTime(e.target.value)}
-                                required
-                                className="input-shadow"
-                            />
+                            <div className="relative">
+                                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+                                <input
+                                    type="time"
+                                    value={startTime}
+                                    onChange={(e) => setStartTime(e.target.value)}
+                                    required
+                                    className="input-shadow pl-10"
+                                />
+                            </div>
                         </div>
                     </div>
 
                     {/* End Date & Time */}
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-xs font-bold mb-2 uppercase tracking-wider text-muted-foreground">
-                                <Calendar size={14} className="inline mr-1" />
+                            <label className="block text-sm font-medium text-foreground mb-1.5">
                                 Return Date
                             </label>
-                            <input
-                                type="date"
-                                value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
-                                min={startDate || new Date().toISOString().split('T')[0]}
-                                required
-                                className="input-shadow"
-                            />
+                            <div className="relative">
+                                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+                                <input
+                                    type="date"
+                                    value={endDate}
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                    min={startDate || new Date().toISOString().split('T')[0]}
+                                    required
+                                    className="input-shadow pl-10"
+                                />
+                            </div>
                         </div>
                         <div>
-                            <label className="block text-xs font-bold mb-2 uppercase tracking-wider text-muted-foreground">
-                                <Clock size={14} className="inline mr-1" />
+                            <label className="block text-sm font-medium text-foreground mb-1.5">
                                 Return Time
                             </label>
-                            <input
-                                type="time"
-                                value={endTime}
-                                onChange={(e) => setEndTime(e.target.value)}
-                                required
-                                className="input-shadow"
-                            />
+                            <div className="relative">
+                                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+                                <input
+                                    type="time"
+                                    value={endTime}
+                                    onChange={(e) => setEndTime(e.target.value)}
+                                    required
+                                    className="input-shadow pl-10"
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Duration and Price Summary */}
                 {duration && price !== null && (
-                    <div className="bg-muted border-2 border-border p-6 space-y-4">
+                    <div className="bg-muted/30 rounded-xl border border-border/50 p-4 space-y-4">
                         <div className="flex justify-between text-sm">
                             <span className="text-muted-foreground">Duration</span>
-                            <span className="font-bold">{duration.hours}h {duration.minutes}m</span>
+                            <span className="font-medium text-foreground">{duration.hours}h {duration.minutes}m</span>
                         </div>
-                        <div className="flex justify-between items-center pt-4 border-t-2 border-border">
-                            <span className="text-lg font-bold">Total Price</span>
-                            <span className="text-3xl font-bold text-primary">${price.toFixed(2)}</span>
+                        <div className="flex justify-between items-center pt-4 border-t border-border/50">
+                            <span className="text-base font-bold text-foreground">Total Price</span>
+                            <span className="text-2xl font-bold text-primary">${price.toFixed(2)}</span>
                         </div>
                     </div>
                 )}
 
                 {/* Error Message */}
                 {error && (
-                    <div className="border-2 border-destructive bg-destructive/10 p-4 flex items-center gap-3 shadow-warm">
-                        <AlertCircle size={20} className="text-destructive" />
+                    <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex items-center gap-3">
+                        <AlertCircle size={18} className="text-destructive" />
                         <p className="text-sm text-destructive font-medium">{error}</p>
                     </div>
                 )}
 
                 {/* Success Message */}
                 {success && (
-                    <div className="border-2 border-green-600 bg-green-50 p-4 flex items-center gap-3 shadow-warm">
-                        <CheckCircle size={20} className="text-green-600" />
-                        <p className="text-sm text-green-600 font-medium">Booking confirmed! Redirecting...</p>
+                    <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center gap-3">
+                        <CheckCircle size={18} className="text-emerald-600" />
+                        <p className="text-sm text-emerald-600 font-medium">Booking confirmed! Redirecting...</p>
                     </div>
                 )}
 
@@ -290,11 +298,11 @@ const OrderForm = ({ bikeId, onSuccess }) => {
                 <button
                     type="submit"
                     disabled={submitting || !startDate || !endDate}
-                    className="btn-primary w-full py-4 text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="btn-primary w-full py-3 text-base"
                 >
                     {submitting ? (
                         <span className="flex items-center justify-center gap-2">
-                            <div className="h-5 w-5 border-2 border-white border-t-transparent animate-spin"></div>
+                            <div className="h-4 w-4 border-2 border-white/50 border-t-white rounded-full animate-spin"></div>
                             Processing...
                         </span>
                     ) : (

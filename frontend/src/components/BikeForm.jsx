@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { Bike as BikeIcon, DollarSign, Tag, Info, CheckCircle } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { cn } from '../lib/utils';
 
 const BikeForm = ({ onSuccess }) => {
     const [formData, setFormData] = useState({
@@ -97,35 +95,35 @@ const BikeForm = ({ onSuccess }) => {
         <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">
+                    <label className="text-sm font-medium text-foreground">
                         Brand
                     </label>
                     <div className="relative">
-                        <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                        <Tag className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
                         <input
                             type="text"
                             name="brand"
                             value={formData.brand}
                             onChange={handleChange}
-                            placeholder="e.g. Trek, Giant"
-                            className="w-full pl-12 pr-4 py-4 bg-gray-50/50 dark:bg-slate-800/50 border border-gray-200/50 dark:border-slate-700/50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-bold text-gray-900 dark:text-white"
+                            placeholder="e.g. Trek"
+                            className="input-shadow pl-10"
                             required
                         />
                     </div>
                 </div>
                 <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">
+                    <label className="text-sm font-medium text-foreground">
                         Model
                     </label>
                     <div className="relative">
-                        <Info className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                        <Info className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
                         <input
                             type="text"
                             name="model"
                             value={formData.model}
                             onChange={handleChange}
-                            placeholder="e.g. Domane, Escape"
-                            className="w-full pl-12 pr-4 py-4 bg-gray-50/50 dark:bg-slate-800/50 border border-gray-200/50 dark:border-slate-700/50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-bold text-gray-900 dark:text-white"
+                            placeholder="e.g. Domane"
+                            className="input-shadow pl-10"
                             required
                         />
                     </div>
@@ -134,16 +132,16 @@ const BikeForm = ({ onSuccess }) => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">
+                    <label className="text-sm font-medium text-foreground">
                         Type
                     </label>
                     <div className="relative">
-                        <BikeIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                        <BikeIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
                         <select
                             name="type"
                             value={formData.type}
                             onChange={handleChange}
-                            className="w-full pl-12 pr-4 py-4 bg-gray-50/50 dark:bg-slate-800/50 border border-gray-200/50 dark:border-slate-700/50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-bold text-gray-900 dark:text-white appearance-none"
+                            className="input-shadow pl-10 appearance-none"
                             required
                         >
                             <option value="city">City</option>
@@ -154,11 +152,11 @@ const BikeForm = ({ onSuccess }) => {
                     </div>
                 </div>
                 <div className="space-y-2">
-                    <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">
+                    <label className="text-sm font-medium text-foreground">
                         Price per Hour
                     </label>
                     <div className="relative">
-                        <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                        <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
                         <input
                             type="number"
                             step="0.01"
@@ -166,49 +164,37 @@ const BikeForm = ({ onSuccess }) => {
                             value={formData.price_per_hour}
                             onChange={handleChange}
                             placeholder="0.00"
-                            className="w-full pl-12 pr-4 py-4 bg-gray-50/50 dark:bg-slate-800/50 border border-gray-200/50 dark:border-slate-700/50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all font-bold text-gray-900 dark:text-white"
+                            className="input-shadow pl-10"
                             required
                         />
                     </div>
                 </div>
             </div>
 
-            <AnimatePresence>
-                {success && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        className="bg-green-500/10 border border-green-500/20 p-4 rounded-2xl flex items-center gap-3 text-green-600 font-bold text-sm"
-                    >
-                        <CheckCircle size={20} />
-                        Bike listed successfully!
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            {success && (
+                <div className="bg-emerald-50 text-emerald-600 border border-emerald-200 p-4 rounded-lg flex items-center gap-3 font-medium text-sm">
+                    <CheckCircle size={20} />
+                    Bike listed successfully!
+                </div>
+            )}
 
             <button
                 type="submit"
                 disabled={submitting || success}
-                className={cn(
-                    "w-full py-4 rounded-2xl text-white font-black text-lg shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-3",
-                    submitting || success
-                        ? "bg-gray-300 dark:bg-slate-700 cursor-not-allowed shadow-none text-gray-500 dark:text-gray-500"
-                        : "btn-primary"
-                )}
+                className="btn-primary w-full py-2.5"
             >
                 {submitting ? (
-                    <>
-                        <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span className="flex items-center justify-center gap-2">
+                        <div className="h-4 w-4 border-2 border-white/50 border-t-white rounded-full animate-spin"></div>
                         Listing...
-                    </>
+                    </span>
                 ) : success ? (
-                    <>
-                        <CheckCircle size={20} />
-                        Done!
-                    </>
+                    <span className="flex items-center justify-center gap-2">
+                        <CheckCircle size={18} />
+                        Done
+                    </span>
                 ) : (
-                    'List My Bike'
+                    'List Bike'
                 )}
             </button>
         </form>
@@ -216,4 +202,3 @@ const BikeForm = ({ onSuccess }) => {
 };
 
 export default BikeForm;
-

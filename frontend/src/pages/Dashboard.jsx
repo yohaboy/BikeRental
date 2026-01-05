@@ -6,11 +6,12 @@ import {
     Settings,
     LogOut,
     Plus,
-    X,
-    Clock,
-    DollarSign,
+    Menu,
     User,
-    Menu
+    DollarSign,
+    Clock,
+    CheckCircle,
+    AlertCircle
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -155,15 +156,15 @@ function Dashboard() {
                 setActiveTab(tab);
                 setSidebarOpen(false);
             }}
-            className={`w-full flex items-center gap-3 px-4 py-3 transition-all ${activeTab === tab
-                    ? 'bg-primary text-white border-l-4 border-white'
-                    : 'text-foreground hover:bg-muted border-l-4 border-transparent'
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-sm font-medium ${activeTab === tab
+                ? 'bg-primary/10 text-primary'
+                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
         >
-            <Icon size={20} />
-            <span className="font-bold text-sm uppercase tracking-wider">{label}</span>
-            {badge && (
-                <span className="ml-auto bg-primary text-white px-2 py-0.5 text-xs font-bold">
+            <Icon size={18} />
+            <span>{label}</span>
+            {badge !== undefined && badge > 0 && (
+                <span className="ml-auto bg-primary text-primary-foreground px-2 py-0.5 rounded-full text-xs font-bold">
                     {badge}
                 </span>
             )}
@@ -173,23 +174,24 @@ function Dashboard() {
     return (
         <div className="min-h-screen bg-background flex">
             {/* Sidebar */}
-            <aside className={`fixed md:sticky top-0 left-0 h-screen bg-card border-r-2 border-border shadow-warm z-40 transition-transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
-                } w-64`}>
-                <div className="p-6 border-b-2 border-border">
+            <aside className={`fixed md:sticky top-0 left-0 h-screen bg-card border-r border-border z-40 transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+                } w-72 flex flex-col`}>
+                <div className="p-6 border-b border-border/50">
                     <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-primary flex items-center justify-center">
-                            <User className="text-white" size={24} />
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                            <User size={20} />
                         </div>
-                        <div>
-                            <h2 className="font-bold text-lg">{userProfile?.username}</h2>
-                            <p className="text-xs text-muted-foreground uppercase tracking-wider">
-                                {userProfile?.role}
+                        <div className="overflow-hidden">
+                            <h2 className="font-bold text-sm text-foreground truncate">{userProfile?.username}</h2>
+                            <p className="text-xs text-muted-foreground capitalize truncate">
+                                {userProfile?.role} Account
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <nav className="py-4">
+                <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+                    <p className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 mt-2">Menu</p>
                     <SidebarLink icon={LayoutDashboard} label="Overview" tab="overview" />
 
                     {userProfile?.role === 'owner' ? (
@@ -201,16 +203,18 @@ function Dashboard() {
                         <SidebarLink icon={Calendar} label="My Rentals" tab="rentals" badge={rentals.length} />
                     )}
 
+                    <div className="my-4 border-t border-border/50"></div>
+                    <p className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Account</p>
                     <SidebarLink icon={Settings} label="Settings" tab="settings" />
                 </nav>
 
-                <div className="absolute bottom-0 left-0 right-0 p-4 border-t-2 border-border">
+                <div className="p-4 border-t border-border/50">
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-3 px-4 py-3 text-destructive hover:bg-destructive/10 transition-all border-2 border-destructive"
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors text-sm font-medium"
                     >
-                        <LogOut size={20} />
-                        <span className="font-bold text-sm uppercase tracking-wider">Logout</span>
+                        <LogOut size={18} />
+                        <span>Sign Out</span>
                     </button>
                 </div>
             </aside>
@@ -218,301 +222,332 @@ function Dashboard() {
             {/* Mobile Sidebar Overlay */}
             {sidebarOpen && (
                 <div
-                    className="fixed inset-0 bg-black/50 z-30 md:hidden"
+                    className="fixed inset-0 bg-background/80 backdrop-blur-sm z-30 md:hidden"
                     onClick={() => setSidebarOpen(false)}
                 ></div>
             )}
 
             {/* Main Content */}
-            <main className="flex-1 p-6">
+            <main className="flex-1 min-w-0 overflow-auto">
                 {/* Mobile Header */}
-                <div className="md:hidden flex items-center justify-between mb-6">
+                <div className="md:hidden flex items-center justify-between p-4 border-b border-border bg-card sticky top-0 z-20">
                     <button
                         onClick={() => setSidebarOpen(true)}
-                        className="p-2 border-2 border-primary text-primary"
+                        className="p-2 -ml-2 rounded-md text-muted-foreground hover:bg-muted"
                     >
                         <Menu size={24} />
                     </button>
-                    <h1 className="text-2xl font-bold">Dashboard</h1>
-                    <div className="w-10"></div>
+                    <h1 className="text-lg font-bold">Dashboard</h1>
+                    <div className="w-8"></div>
                 </div>
 
-                {loading ? (
-                    <div className="flex items-center justify-center py-20">
-                        <div className="h-12 w-12 border-4 border-primary border-t-transparent animate-spin"></div>
-                    </div>
-                ) : (
-                    <>
-                        {/* Overview Tab */}
-                        {activeTab === 'overview' && (
-                            <div>
-                                <h1 className="text-heading mb-8">Dashboard Overview</h1>
+                <div className="p-6 md:p-8 max-w-7xl mx-auto">
+                    {loading ? (
+                        <div className="flex items-center justify-center py-20">
+                            <div className="h-10 w-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                    ) : (
+                        <>
+                            {/* Overview Tab */}
+                            {activeTab === 'overview' && (
+                                <div className="space-y-8">
+                                    <div>
+                                        <h1 className="text-3xl font-bold tracking-tight text-foreground">Dashboard</h1>
+                                        <p className="text-muted-foreground mt-1">Welcome back, here's what's happening today.</p>
+                                    </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                                    {userProfile?.role === 'owner' ? (
-                                        <>
-                                            <div className="card-shadow p-6">
-                                                <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Total Bikes</p>
-                                                <p className="text-4xl font-bold text-primary">{bikes.length}</p>
-                                            </div>
-                                            <div className="card-shadow p-6">
-                                                <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Active Bookings</p>
-                                                <p className="text-4xl font-bold text-secondary">
-                                                    {ownerRentals.filter(r => r.status === 'active').length}
-                                                </p>
-                                            </div>
-                                            <div className="card-shadow p-6">
-                                                <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Total Revenue</p>
-                                                <p className="text-4xl font-bold text-accent">
-                                                    ${ownerRentals.reduce((sum, r) => sum + parseFloat(r.total_cost || 0), 0).toFixed(2)}
-                                                </p>
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <div className="card-shadow p-6">
-                                                <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Total Rentals</p>
-                                                <p className="text-4xl font-bold text-primary">{rentals.length}</p>
-                                            </div>
-                                            <div className="card-shadow p-6">
-                                                <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Active Rentals</p>
-                                                <p className="text-4xl font-bold text-secondary">
-                                                    {rentals.filter(r => r.status === 'active').length}
-                                                </p>
-                                            </div>
-                                            <div className="card-shadow p-6">
-                                                <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Total Spent</p>
-                                                <p className="text-4xl font-bold text-accent">
-                                                    ${rentals.reduce((sum, r) => sum + parseFloat(r.total_cost || 0), 0).toFixed(2)}
-                                                </p>
-                                            </div>
-                                        </>
-                                    )}
-                                </div>
-
-                                <div className="card-shadow p-6">
-                                    <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
-                                    <div className="flex flex-wrap gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                         {userProfile?.role === 'owner' ? (
-                                            <button
-                                                onClick={() => setShowAddBikeModal(true)}
-                                                className="btn-primary px-6 py-3 flex items-center gap-2"
-                                            >
-                                                <Plus size={20} />
-                                                Add New Bike
-                                            </button>
+                                            <>
+                                                <StatsCard
+                                                    title="Total Bikes"
+                                                    value={bikes.length}
+                                                    icon={Bike}
+                                                    trend="+2 this week"
+                                                />
+                                                <StatsCard
+                                                    title="Active Bookings"
+                                                    value={ownerRentals.filter(r => r.status === 'active').length}
+                                                    icon={Calendar}
+                                                    color="text-emerald-500"
+                                                />
+                                                <StatsCard
+                                                    title="Total Revenue"
+                                                    value={`$${ownerRentals.reduce((sum, r) => sum + parseFloat(r.total_cost || 0), 0).toFixed(2)}`}
+                                                    icon={DollarSign}
+                                                    color="text-indigo-500"
+                                                />
+                                            </>
                                         ) : (
-                                            <button
-                                                onClick={() => navigate('/')}
-                                                className="btn-primary px-6 py-3"
-                                            >
-                                                Browse Bikes
-                                            </button>
+                                            <>
+                                                <StatsCard
+                                                    title="Total Rentals"
+                                                    value={rentals.length}
+                                                    icon={Bike}
+                                                />
+                                                <StatsCard
+                                                    title="Active Rentals"
+                                                    value={rentals.filter(r => r.status === 'active').length}
+                                                    icon={Clock}
+                                                    color="text-emerald-500"
+                                                />
+                                                <StatsCard
+                                                    title="Total Spent"
+                                                    value={`$${rentals.reduce((sum, r) => sum + parseFloat(r.total_cost || 0), 0).toFixed(2)}`}
+                                                    icon={DollarSign}
+                                                    color="text-indigo-500"
+                                                />
+                                            </>
                                         )}
                                     </div>
-                                </div>
-                            </div>
-                        )}
 
-                        {/* My Bikes Tab (Owner) */}
-                        {activeTab === 'bikes' && userProfile?.role === 'owner' && (
-                            <div>
-                                <div className="flex justify-between items-center mb-8">
-                                    <h1 className="text-heading">My Bikes</h1>
-                                    <button
-                                        onClick={() => setShowAddBikeModal(true)}
-                                        className="btn-primary px-6 py-3 flex items-center gap-2"
-                                    >
-                                        <Plus size={20} />
-                                        Add Bike
-                                    </button>
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {bikes.map((bike) => (
-                                        <div key={bike.id} className="card-shadow">
-                                            <div className="h-32 bg-muted border-b-2 border-border flex items-center justify-center">
-                                                <Bike size={64} className="text-primary" strokeWidth={1.5} />
-                                            </div>
-                                            <div className="p-6">
-                                                <span className={`badge mb-3 ${bike.is_available ? 'bg-green-100 text-green-700 border-green-300' : 'bg-red-100 text-red-700 border-red-300'}`}>
-                                                    {bike.is_available ? 'Available' : 'Rented'}
-                                                </span>
-                                                <h3 className="font-bold text-xl mb-1">{bike.brand}</h3>
-                                                <p className="text-muted-foreground mb-4">{bike.model}</p>
-                                                <div className="flex justify-between items-center mb-4">
-                                                    <span className="text-xs uppercase text-muted-foreground">Price</span>
-                                                    <span className="text-xl font-bold text-primary">${bike.price_per_hour}/hr</span>
-                                                </div>
-                                                <button
-                                                    onClick={() => handleDeleteBike(bike.id)}
-                                                    className="w-full py-2 border-2 border-destructive text-destructive hover:bg-destructive hover:text-white transition-all font-bold text-sm"
-                                                >
-                                                    Delete
-                                                </button>
-                                            </div>
+                                    <div className="bg-card rounded-xl border border-border/50 shadow-sm p-6">
+                                        <div className="flex items-center justify-between mb-6">
+                                            <h2 className="text-lg font-semibold">Quick Actions</h2>
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Bookings Tab (Owner) */}
-                        {activeTab === 'bookings' && userProfile?.role === 'owner' && (
-                            <div>
-                                <h1 className="text-heading mb-8">Bike Bookings</h1>
-
-                                <div className="card-shadow overflow-x-auto">
-                                    <table className="w-full">
-                                        <thead className="border-b-2 border-border">
-                                            <tr>
-                                                <th className="text-left p-4 text-xs uppercase tracking-wider text-muted-foreground">Bike</th>
-                                                <th className="text-left p-4 text-xs uppercase tracking-wider text-muted-foreground">Renter</th>
-                                                <th className="text-left p-4 text-xs uppercase tracking-wider text-muted-foreground">Start</th>
-                                                <th className="text-left p-4 text-xs uppercase tracking-wider text-muted-foreground">End</th>
-                                                <th className="text-left p-4 text-xs uppercase tracking-wider text-muted-foreground">Cost</th>
-                                                <th className="text-left p-4 text-xs uppercase tracking-wider text-muted-foreground">Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {ownerRentals.map((rental) => (
-                                                <tr key={rental.id} className="border-b border-border">
-                                                    <td className="p-4 font-bold">{rental.bike_details?.brand} {rental.bike_details?.model}</td>
-                                                    <td className="p-4">{rental.renter_username}</td>
-                                                    <td className="p-4 text-sm">{new Date(rental.start_time).toLocaleString()}</td>
-                                                    <td className="p-4 text-sm">{new Date(rental.end_time).toLocaleString()}</td>
-                                                    <td className="p-4 font-bold text-primary">${rental.total_cost}</td>
-                                                    <td className="p-4">
-                                                        <span className={`badge ${rental.status === 'active' ? 'bg-green-100 text-green-700 border-green-300' :
-                                                                rental.status === 'completed' ? 'bg-gray-100 text-gray-700 border-gray-300' :
-                                                                    'bg-yellow-100 text-yellow-700 border-yellow-300'
-                                                            }`}>
-                                                            {rental.status}
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* My Rentals Tab (Renter) */}
-                        {activeTab === 'rentals' && userProfile?.role === 'renter' && (
-                            <div>
-                                <h1 className="text-heading mb-8">My Rentals</h1>
-
-                                <div className="space-y-4">
-                                    {rentals.map((rental) => (
-                                        <div key={rental.id} className="card-shadow p-6">
-                                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="w-16 h-16 bg-muted border-2 border-border flex items-center justify-center">
-                                                        <Bike size={32} className="text-primary" />
-                                                    </div>
-                                                    <div>
-                                                        <h3 className="font-bold text-lg">{rental.bike_details?.brand} {rental.bike_details?.model}</h3>
-                                                        <p className="text-sm text-muted-foreground">{rental.bike_details?.type}</p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex flex-col md:items-end gap-2">
-                                                    <span className={`badge ${rental.status === 'active' ? 'bg-green-100 text-green-700 border-green-300' :
-                                                            rental.status === 'completed' ? 'bg-gray-100 text-gray-700 border-gray-300' :
-                                                                'bg-yellow-100 text-yellow-700 border-yellow-300'
-                                                        }`}>
-                                                        {rental.status}
-                                                    </span>
-                                                    <p className="text-2xl font-bold text-primary">${rental.total_cost}</p>
-                                                </div>
-                                            </div>
-                                            <div className="mt-4 pt-4 border-t-2 border-border grid grid-cols-2 gap-4 text-sm">
-                                                <div>
-                                                    <p className="text-xs uppercase text-muted-foreground mb-1">Pickup</p>
-                                                    <p className="font-bold">{new Date(rental.start_time).toLocaleString()}</p>
-                                                </div>
-                                                <div>
-                                                    <p className="text-xs uppercase text-muted-foreground mb-1">Return</p>
-                                                    <p className="font-bold">{new Date(rental.end_time).toLocaleString()}</p>
-                                                </div>
-                                            </div>
-                                            {rental.status === 'active' && (
+                                        <div className="flex flex-wrap gap-4">
+                                            {userProfile?.role === 'owner' ? (
                                                 <button
-                                                    onClick={() => handleCompleteRental(rental.id)}
-                                                    className="mt-4 btn-primary px-6 py-2 text-sm"
+                                                    onClick={() => setShowAddBikeModal(true)}
+                                                    className="btn-primary"
                                                 >
-                                                    Complete Rental
+                                                    <Plus size={18} className="mr-2" />
+                                                    Add New Bike
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={() => navigate('/')}
+                                                    className="btn-primary"
+                                                >
+                                                    Browse Bikes
                                                 </button>
                                             )}
                                         </div>
-                                    ))}
+                                    </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
 
-                        {/* Settings Tab */}
-                        {activeTab === 'settings' && (
-                            <div>
-                                <h1 className="text-heading mb-8">Settings</h1>
+                            {/* My Bikes Tab (Owner) */}
+                            {activeTab === 'bikes' && userProfile?.role === 'owner' && (
+                                <div className="space-y-6">
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                        <div>
+                                            <h1 className="text-2xl font-bold tracking-tight">My Bikes</h1>
+                                            <p className="text-muted-foreground">Manage your fleet and availability.</p>
+                                        </div>
+                                        <button
+                                            onClick={() => setShowAddBikeModal(true)}
+                                            className="btn-primary"
+                                        >
+                                            <Plus size={18} className="mr-2" />
+                                            Add Bike
+                                        </button>
+                                    </div>
 
-                                <div className="card-shadow p-6 max-w-2xl">
-                                    <h2 className="text-xl font-bold mb-6">Profile Information</h2>
-                                    <div className="space-y-4">
-                                        <div>
-                                            <label className="block text-xs font-bold mb-2 uppercase tracking-wider text-muted-foreground">
-                                                Username
-                                            </label>
-                                            <input
-                                                type="text"
-                                                value={userProfile?.username || ''}
-                                                disabled
-                                                className="input-shadow bg-muted"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs font-bold mb-2 uppercase tracking-wider text-muted-foreground">
-                                                Email
-                                            </label>
-                                            <input
-                                                type="email"
-                                                value={userProfile?.email || ''}
-                                                disabled
-                                                className="input-shadow bg-muted"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs font-bold mb-2 uppercase tracking-wider text-muted-foreground">
-                                                Role
-                                            </label>
-                                            <input
-                                                type="text"
-                                                value={userProfile?.role || ''}
-                                                disabled
-                                                className="input-shadow bg-muted capitalize"
-                                            />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {bikes.map((bike) => (
+                                            <div key={bike.id} className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-md transition-all">
+                                                <div className="h-40 bg-muted/50 flex items-center justify-center relative">
+                                                    <Bike size={48} className="text-muted-foreground/50" strokeWidth={1.5} />
+                                                    <div className="absolute top-3 right-3">
+                                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${bike.is_available
+                                                                ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400'
+                                                                : 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400'
+                                                            }`}>
+                                                            {bike.is_available ? 'Available' : 'Rented'}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div className="p-5">
+                                                    <h3 className="font-semibold text-lg mb-1">{bike.brand}</h3>
+                                                    <p className="text-sm text-muted-foreground mb-4">{bike.model}</p>
+
+                                                    <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                                                        <div>
+                                                            <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Rate</p>
+                                                            <p className="font-bold text-primary">${bike.price_per_hour}/hr</p>
+                                                        </div>
+                                                        <button
+                                                            onClick={() => handleDeleteBike(bike.id)}
+                                                            className="text-sm font-medium text-destructive hover:text-destructive/80 hover:bg-destructive/10 px-3 py-1.5 rounded-md transition-colors"
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Bookings Tab (Owner) */}
+                            {activeTab === 'bookings' && userProfile?.role === 'owner' && (
+                                <div className="space-y-6">
+                                    <div>
+                                        <h1 className="text-2xl font-bold tracking-tight">Bookings</h1>
+                                        <p className="text-muted-foreground">Track rental history and earnings.</p>
+                                    </div>
+
+                                    <div className="bg-card rounded-xl border border-border/50 shadow-sm overflow-hidden">
+                                        <div className="overflow-x-auto">
+                                            <table className="w-full text-sm text-left">
+                                                <thead className="bg-muted/50 text-muted-foreground font-medium border-b border-border/50">
+                                                    <tr>
+                                                        <th className="px-6 py-4">Bike</th>
+                                                        <th className="px-6 py-4">Renter</th>
+                                                        <th className="px-6 py-4">Duration</th>
+                                                        <th className="px-6 py-4">Cost</th>
+                                                        <th className="px-6 py-4">Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-border/50">
+                                                    {ownerRentals.map((rental) => (
+                                                        <tr key={rental.id} className="hover:bg-muted/30 transition-colors">
+                                                            <td className="px-6 py-4">
+                                                                <div className="font-medium text-foreground">{rental.bike_details?.brand}</div>
+                                                                <div className="text-xs text-muted-foreground">{rental.bike_details?.model}</div>
+                                                            </td>
+                                                            <td className="px-6 py-4">{rental.renter_username}</td>
+                                                            <td className="px-6 py-4">
+                                                                <div className="text-foreground">{new Date(rental.start_time).toLocaleDateString()}</div>
+                                                                <div className="text-xs text-muted-foreground">
+                                                                    {new Date(rental.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -
+                                                                    {rental.end_time ? new Date(rental.end_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Ongoing'}
+                                                                </div>
+                                                            </td>
+                                                            <td className="px-6 py-4 font-medium text-foreground">${rental.total_cost}</td>
+                                                            <td className="px-6 py-4">
+                                                                <StatusBadge status={rental.status} />
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        )}
-                    </>
-                )}
+                            )}
+
+                            {/* My Rentals Tab (Renter) */}
+                            {activeTab === 'rentals' && userProfile?.role === 'renter' && (
+                                <div className="space-y-6">
+                                    <div>
+                                        <h1 className="text-2xl font-bold tracking-tight">My Rentals</h1>
+                                        <p className="text-muted-foreground">View your current and past rides.</p>
+                                    </div>
+
+                                    <div className="grid gap-4">
+                                        {rentals.map((rental) => (
+                                            <div key={rental.id} className="bg-card rounded-xl border border-border/50 p-6 flex flex-col md:flex-row gap-6 items-start md:items-center justify-between hover:shadow-md transition-all">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
+                                                        <Bike size={24} />
+                                                    </div>
+                                                    <div>
+                                                        <h3 className="font-semibold text-lg">{rental.bike_details?.brand} {rental.bike_details?.model}</h3>
+                                                        <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+                                                            <Calendar size={14} />
+                                                            <span>{new Date(rental.start_time).toLocaleDateString()}</span>
+                                                            <span>•</span>
+                                                            <span>{new Date(rental.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="flex items-center gap-6 w-full md:w-auto justify-between md:justify-end">
+                                                    <div className="text-right">
+                                                        <p className="text-sm text-muted-foreground mb-1">Total</p>
+                                                        <p className="font-bold text-xl">${rental.total_cost}</p>
+                                                    </div>
+
+                                                    <div className="flex flex-col items-end gap-2">
+                                                        <StatusBadge status={rental.status} />
+                                                        {rental.status === 'active' && (
+                                                            <button
+                                                                onClick={() => handleCompleteRental(rental.id)}
+                                                                className="text-sm font-medium text-primary hover:underline"
+                                                            >
+                                                                Complete Rental
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Settings Tab */}
+                            {activeTab === 'settings' && (
+                                <div className="space-y-6">
+                                    <div>
+                                        <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
+                                        <p className="text-muted-foreground">Manage your account preferences.</p>
+                                    </div>
+
+                                    <div className="bg-card rounded-xl border border-border/50 shadow-sm max-w-2xl">
+                                        <div className="p-6 border-b border-border/50">
+                                            <h2 className="font-semibold text-lg">Profile Information</h2>
+                                        </div>
+                                        <div className="p-6 space-y-4">
+                                            <div>
+                                                <label className="block text-sm font-medium text-foreground mb-1.5">
+                                                    Username
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={userProfile?.username || ''}
+                                                    disabled
+                                                    className="input-shadow bg-muted/50"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-foreground mb-1.5">
+                                                    Email
+                                                </label>
+                                                <input
+                                                    type="email"
+                                                    value={userProfile?.email || ''}
+                                                    disabled
+                                                    className="input-shadow bg-muted/50"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-foreground mb-1.5">
+                                                    Role
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={userProfile?.role || ''}
+                                                    disabled
+                                                    className="input-shadow bg-muted/50 capitalize"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </>
+                    )}
+                </div>
             </main>
 
             {/* Add Bike Modal */}
             {showAddBikeModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-background/95">
-                    <div className="w-full max-w-2xl border-4 border-primary bg-card shadow-warm-lg">
-                        <div className="bg-primary p-6 flex justify-between items-center border-b-4 border-primary">
-                            <h3 className="text-2xl font-bold uppercase tracking-wider text-white">Add New Bike</h3>
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+                    <div className="w-full max-w-lg bg-card rounded-2xl shadow-2xl border border-border animate-in fade-in zoom-in duration-200">
+                        <div className="p-6 border-b border-border flex justify-between items-center">
+                            <h3 className="text-xl font-bold text-foreground">Add New Bike</h3>
                             <button
                                 onClick={() => setShowAddBikeModal(false)}
-                                className="text-3xl text-white hover:text-white/70 transition-all"
+                                className="text-muted-foreground hover:text-foreground transition-colors p-1 hover:bg-muted rounded-full"
                             >
-                                ×
+                                <X size={20} />
                             </button>
                         </div>
-                        <div className="p-8">
+                        <div className="p-6">
                             <BikeForm
                                 onSuccess={() => {
                                     setShowAddBikeModal(false);
@@ -524,6 +559,59 @@ function Dashboard() {
                 </div>
             )}
         </div>
+    );
+}
+
+// Helper Components
+function StatsCard({ title, value, icon: Icon, trend, color }) {
+    return (
+        <div className="bg-card rounded-xl border border-border/50 shadow-sm p-6">
+            <div className="flex items-center justify-between mb-4">
+                <p className="text-sm font-medium text-muted-foreground">{title}</p>
+                <div className={`p-2 rounded-lg bg-muted/50 ${color || 'text-primary'}`}>
+                    <Icon size={20} />
+                </div>
+            </div>
+            <div>
+                <h3 className="text-2xl font-bold text-foreground">{value}</h3>
+                {trend && <p className="text-xs text-emerald-500 font-medium mt-1">{trend}</p>}
+            </div>
+        </div>
+    );
+}
+
+function StatusBadge({ status }) {
+    const styles = {
+        active: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
+        completed: 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300',
+        pending: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400'
+    };
+
+    return (
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${styles[status] || styles.pending}`}>
+            {status}
+        </span>
+    );
+}
+
+// Helper for X icon
+function X({ size, className }) {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={size}
+            height={size}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={className}
+        >
+            <path d="M18 6 6 18" />
+            <path d="m6 6 18 18" />
+        </svg>
     );
 }
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { AlertCircle, LogIn } from 'lucide-react';
+import { AlertCircle, LogIn, Bike } from 'lucide-react';
 
 function Login() {
     const [username, setUsername] = useState('');
@@ -39,23 +39,20 @@ function Login() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-6">
+        <div className="min-h-screen flex items-center justify-center p-4 bg-background">
             <div className="w-full max-w-md">
-                <div className="card-shadow border-4 border-primary">
-                    {/* Header */}
-                    <div className="bg-primary p-8 border-b-4 border-primary">
-                        <div className="flex items-center gap-3 mb-3">
-                            <div className="w-12 h-12 bg-white/20 flex items-center justify-center">
-                                <LogIn className="text-white" size={24} />
-                            </div>
-                            <h1 className="text-3xl font-bold uppercase tracking-wider text-white">Login</h1>
-                        </div>
-                        <p className="text-sm text-white/90 font-medium">Welcome back to BikeHub</p>
+                <div className="text-center mb-8">
+                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary text-primary-foreground mb-4">
+                        <Bike size={24} />
                     </div>
+                    <h1 className="text-2xl font-bold tracking-tight text-foreground">Welcome back</h1>
+                    <p className="text-muted-foreground mt-2">Enter your credentials to access your account</p>
+                </div>
 
-                    <form onSubmit={handleSubmit} className="p-8 space-y-6 bg-card">
+                <div className="bg-card rounded-xl border border-border/50 shadow-sm p-8">
+                    <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
-                            <label className="block text-xs font-bold mb-2 uppercase tracking-wider text-muted-foreground">
+                            <label className="block text-sm font-medium text-foreground mb-1.5">
                                 Username
                             </label>
                             <input
@@ -69,9 +66,14 @@ function Login() {
                         </div>
 
                         <div>
-                            <label className="block text-xs font-bold mb-2 uppercase tracking-wider text-muted-foreground">
-                                Password
-                            </label>
+                            <div className="flex items-center justify-between mb-1.5">
+                                <label className="block text-sm font-medium text-foreground">
+                                    Password
+                                </label>
+                                <a href="#" className="text-sm font-medium text-primary hover:text-primary/80">
+                                    Forgot password?
+                                </a>
+                            </div>
                             <input
                                 type="password"
                                 value={password}
@@ -83,8 +85,8 @@ function Login() {
                         </div>
 
                         {error && (
-                            <div className="border-2 border-destructive bg-destructive/10 p-4 flex items-start gap-3 shadow-warm">
-                                <AlertCircle size={20} className="text-destructive flex-shrink-0 mt-0.5" />
+                            <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex items-start gap-3">
+                                <AlertCircle size={18} className="text-destructive flex-shrink-0 mt-0.5" />
                                 <p className="text-sm text-destructive font-medium">{error}</p>
                             </div>
                         )}
@@ -92,23 +94,23 @@ function Login() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="btn-primary w-full py-4 text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="btn-primary w-full py-2.5"
                         >
                             {loading ? (
                                 <span className="flex items-center justify-center gap-2">
-                                    <div className="h-5 w-5 border-2 border-white border-t-transparent animate-spin"></div>
+                                    <div className="h-4 w-4 border-2 border-white/50 border-t-white rounded-full animate-spin"></div>
                                     Logging in...
                                 </span>
                             ) : (
-                                'Login'
+                                'Sign In'
                             )}
                         </button>
                     </form>
 
-                    <div className="border-t-2 border-border p-8 text-center bg-muted/30">
+                    <div className="mt-6 pt-6 border-t border-border/50 text-center">
                         <p className="text-sm text-muted-foreground">
                             Don't have an account?{' '}
-                            <Link to="/register" className="font-bold text-primary hover:text-primary/80 transition-all">
+                            <Link to="/register" className="font-semibold text-primary hover:text-primary/80 transition-colors">
                                 Create Account
                             </Link>
                         </p>

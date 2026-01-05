@@ -55,58 +55,51 @@ function Register() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-6">
+        <div className="min-h-screen flex items-center justify-center p-4 bg-background">
             <div className="w-full max-w-md">
-                <div className="card-shadow border-4 border-secondary">
-                    {/* Header */}
-                    <div className="bg-secondary p-8 border-b-4 border-secondary">
-                        <div className="flex items-center gap-3 mb-3">
-                            <div className="w-12 h-12 bg-white/20 flex items-center justify-center">
-                                <UserPlus className="text-white" size={24} />
-                            </div>
-                            <h1 className="text-3xl font-bold uppercase tracking-wider text-white">Register</h1>
-                        </div>
-                        <p className="text-sm text-white/90 font-medium">Join BikeHub today</p>
+                <div className="text-center mb-8">
+                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary text-primary-foreground mb-4">
+                        <UserPlus size={24} />
                     </div>
+                    <h1 className="text-2xl font-bold tracking-tight text-foreground">Create an account</h1>
+                    <p className="text-muted-foreground mt-2">Join BikeHub to start your journey</p>
+                </div>
 
-                    <form onSubmit={handleSubmit} className="p-8 space-y-6 bg-card">
+                <div className="bg-card rounded-xl border border-border/50 shadow-sm p-8">
+                    <form onSubmit={handleSubmit} className="space-y-5">
                         {/* Role Selection */}
                         <div>
-                            <label className="block text-xs font-bold mb-3 uppercase tracking-wider text-muted-foreground">
+                            <label className="block text-sm font-medium text-foreground mb-3">
                                 I want to
                             </label>
                             <div className="grid grid-cols-2 gap-3">
                                 <button
                                     type="button"
                                     onClick={() => setFormData({ ...formData, role: 'renter' })}
-                                    className={`p-4 border-2 transition-all ${formData.role === 'renter'
-                                            ? 'border-primary bg-primary/10'
-                                            : 'border-border hover:border-primary/50'
+                                    className={`p-4 rounded-xl border transition-all flex flex-col items-center gap-2 ${formData.role === 'renter'
+                                        ? 'border-primary bg-primary/5 text-primary ring-1 ring-primary'
+                                        : 'border-border hover:border-primary/50 text-muted-foreground hover:bg-muted/50'
                                         }`}
                                 >
-                                    <User className={`mx-auto mb-2 ${formData.role === 'renter' ? 'text-primary' : 'text-muted-foreground'}`} size={24} />
-                                    <p className={`text-sm font-bold ${formData.role === 'renter' ? 'text-primary' : 'text-foreground'}`}>
-                                        Rent Bikes
-                                    </p>
+                                    <User size={24} />
+                                    <span className="text-sm font-semibold">Rent Bikes</span>
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setFormData({ ...formData, role: 'owner' })}
-                                    className={`p-4 border-2 transition-all ${formData.role === 'owner'
-                                            ? 'border-primary bg-primary/10'
-                                            : 'border-border hover:border-primary/50'
+                                    className={`p-4 rounded-xl border transition-all flex flex-col items-center gap-2 ${formData.role === 'owner'
+                                        ? 'border-primary bg-primary/5 text-primary ring-1 ring-primary'
+                                        : 'border-border hover:border-primary/50 text-muted-foreground hover:bg-muted/50'
                                         }`}
                                 >
-                                    <Bike className={`mx-auto mb-2 ${formData.role === 'owner' ? 'text-primary' : 'text-muted-foreground'}`} size={24} />
-                                    <p className={`text-sm font-bold ${formData.role === 'owner' ? 'text-primary' : 'text-foreground'}`}>
-                                        List Bikes
-                                    </p>
+                                    <Bike size={24} />
+                                    <span className="text-sm font-semibold">List Bikes</span>
                                 </button>
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-xs font-bold mb-2 uppercase tracking-wider text-muted-foreground">
+                            <label className="block text-sm font-medium text-foreground mb-1.5">
                                 Username
                             </label>
                             <input
@@ -121,7 +114,7 @@ function Register() {
                         </div>
 
                         <div>
-                            <label className="block text-xs font-bold mb-2 uppercase tracking-wider text-muted-foreground">
+                            <label className="block text-sm font-medium text-foreground mb-1.5">
                                 Email
                             </label>
                             <input
@@ -135,39 +128,40 @@ function Register() {
                             />
                         </div>
 
-                        <div>
-                            <label className="block text-xs font-bold mb-2 uppercase tracking-wider text-muted-foreground">
-                                Password
-                            </label>
-                            <input
-                                type="password"
-                                name="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                className="input-shadow"
-                                placeholder="Create a strong password"
-                                required
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-xs font-bold mb-2 uppercase tracking-wider text-muted-foreground">
-                                Confirm Password
-                            </label>
-                            <input
-                                type="password"
-                                name="password2"
-                                value={formData.password2}
-                                onChange={handleChange}
-                                className="input-shadow"
-                                placeholder="Confirm your password"
-                                required
-                            />
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-foreground mb-1.5">
+                                    Password
+                                </label>
+                                <input
+                                    type="password"
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    className="input-shadow"
+                                    placeholder="Create password"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-foreground mb-1.5">
+                                    Confirm
+                                </label>
+                                <input
+                                    type="password"
+                                    name="password2"
+                                    value={formData.password2}
+                                    onChange={handleChange}
+                                    className="input-shadow"
+                                    placeholder="Confirm password"
+                                    required
+                                />
+                            </div>
                         </div>
 
                         {error && (
-                            <div className="border-2 border-destructive bg-destructive/10 p-4 flex items-start gap-3 shadow-warm">
-                                <AlertCircle size={20} className="text-destructive flex-shrink-0 mt-0.5" />
+                            <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex items-start gap-3">
+                                <AlertCircle size={18} className="text-destructive flex-shrink-0 mt-0.5" />
                                 <p className="text-sm text-destructive font-medium">{error}</p>
                             </div>
                         )}
@@ -175,11 +169,11 @@ function Register() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="btn-secondary w-full py-4 text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="btn-primary w-full py-2.5"
                         >
                             {loading ? (
                                 <span className="flex items-center justify-center gap-2">
-                                    <div className="h-5 w-5 border-2 border-white border-t-transparent animate-spin"></div>
+                                    <div className="h-4 w-4 border-2 border-white/50 border-t-white rounded-full animate-spin"></div>
                                     Creating account...
                                 </span>
                             ) : (
@@ -188,11 +182,11 @@ function Register() {
                         </button>
                     </form>
 
-                    <div className="border-t-2 border-border p-8 text-center bg-muted/30">
+                    <div className="mt-6 pt-6 border-t border-border/50 text-center">
                         <p className="text-sm text-muted-foreground">
                             Already have an account?{' '}
-                            <Link to="/login" className="font-bold text-secondary hover:text-secondary/80 transition-all">
-                                Login
+                            <Link to="/login" className="font-semibold text-primary hover:text-primary/80 transition-colors">
+                                Sign In
                             </Link>
                         </p>
                     </div>
