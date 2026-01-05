@@ -15,12 +15,12 @@ function NavBar() {
     };
 
     return (
-        <nav className="bg-card border-b border-border/40 sticky top-0 z-50 backdrop-blur-sm bg-card/80">
+        <nav className="bg-white/80 backdrop-blur-md border-b border-border sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     {/* Logo */}
-                    <Link to="/" className="flex items-center gap-2 group">
-                        <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground transition-transform group-hover:scale-110">
+                    <Link to="/" className="flex items-center gap-2.5 group">
+                        <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20 transition-transform group-hover:scale-105">
                             <Bike size={20} strokeWidth={2.5} />
                         </div>
                         <span className="font-bold text-xl tracking-tight text-foreground">
@@ -29,7 +29,7 @@ function NavBar() {
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center gap-6">
+                    <div className="hidden md:flex items-center gap-8">
                         <Link
                             to="/"
                             className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
@@ -49,7 +49,7 @@ function NavBar() {
                             Contact
                         </Link>
 
-                        <div className="h-4 w-px bg-border"></div>
+                        <div className="h-5 w-px bg-border/60"></div>
 
                         {user ? (
                             <>
@@ -76,7 +76,7 @@ function NavBar() {
                                 </Link>
                                 <Link
                                     to="/register"
-                                    className="btn-primary"
+                                    className="btn-primary shadow-lg shadow-primary/20"
                                 >
                                     Sign Up
                                 </Link>
@@ -84,56 +84,57 @@ function NavBar() {
                         )}
                     </div>
 
-                    {/* Mobile menu button */}
+                    {/* Mobile menu button - Only one icon on the right */}
                     <button
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                        className="md:hidden p-2 rounded-md text-muted-foreground hover:bg-muted transition-colors"
+                        className="md:hidden p-2 rounded-lg text-muted-foreground hover:bg-muted/50 transition-colors"
+                        aria-label="Toggle menu"
                     >
-                        {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                        {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
                 </div>
             </div>
 
-            {/* Mobile Menu */}
+            {/* Mobile Menu Overlay */}
             {mobileMenuOpen && (
-                <div className="md:hidden border-t border-border bg-card">
-                    <div className="px-4 py-3 space-y-1">
+                <div className="md:hidden absolute top-16 left-0 right-0 bg-background border-b border-border shadow-xl animate-in slide-in-from-top-2 duration-200">
+                    <div className="px-4 py-6 space-y-3">
                         <Link
                             to="/"
                             onClick={() => setMobileMenuOpen(false)}
-                            className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:bg-muted transition-colors"
+                            className="block px-4 py-3 rounded-xl text-base font-medium text-foreground hover:bg-muted/50 transition-colors"
                         >
                             Home
                         </Link>
                         <Link
                             to="/"
                             onClick={() => setMobileMenuOpen(false)}
-                            className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:bg-muted transition-colors"
+                            className="block px-4 py-3 rounded-xl text-base font-medium text-foreground hover:bg-muted/50 transition-colors"
                         >
                             About
                         </Link>
                         <Link
                             to="/"
                             onClick={() => setMobileMenuOpen(false)}
-                            className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:bg-muted transition-colors"
+                            className="block px-4 py-3 rounded-xl text-base font-medium text-foreground hover:bg-muted/50 transition-colors"
                         >
                             Contact
                         </Link>
 
-                        <div className="my-2 border-t border-border"></div>
+                        <div className="my-4 border-t border-border/50"></div>
 
                         {user ? (
                             <>
                                 <Link
                                     to="/dashboard"
                                     onClick={() => setMobileMenuOpen(false)}
-                                    className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:bg-muted transition-colors"
+                                    className="block px-4 py-3 rounded-xl text-base font-medium text-foreground hover:bg-muted/50 transition-colors"
                                 >
                                     Dashboard
                                 </Link>
                                 <button
                                     onClick={handleLogout}
-                                    className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-destructive hover:bg-destructive/10 transition-colors"
+                                    className="block w-full text-left px-4 py-3 rounded-xl text-base font-medium text-destructive hover:bg-destructive/10 transition-colors"
                                 >
                                     Logout
                                 </button>
@@ -143,14 +144,14 @@ function NavBar() {
                                 <Link
                                     to="/login"
                                     onClick={() => setMobileMenuOpen(false)}
-                                    className="block px-3 py-2 rounded-md text-base font-medium text-foreground hover:bg-muted transition-colors"
+                                    className="block px-4 py-3 rounded-xl text-base font-medium text-foreground hover:bg-muted/50 transition-colors"
                                 >
                                     Login
                                 </Link>
                                 <Link
                                     to="/register"
                                     onClick={() => setMobileMenuOpen(false)}
-                                    className="block px-3 py-2 mt-2 text-center rounded-md text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                                    className="block px-4 py-3 mt-2 text-center rounded-xl text-base font-bold bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:bg-primary/90 transition-colors"
                                 >
                                     Sign Up
                                 </Link>

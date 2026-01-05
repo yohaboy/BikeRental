@@ -17,12 +17,14 @@ function AppContent() {
     );
   }
 
+  const location = useLocation();
+  const isDashboard = location.pathname.startsWith('/dashboard');
   const isLoggedIn = !!user;
 
   return (
-    <div className="min-h-screen bg-background">
-      <NavBar />
-      <main>
+    <div className="min-h-screen bg-background font-sans text-foreground">
+      {!isDashboard && <NavBar />}
+      <main className={isDashboard ? "h-screen overflow-hidden" : ""}>
         <Routes>
           <Route
             path="/"

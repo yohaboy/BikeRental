@@ -11,7 +11,8 @@ import {
     DollarSign,
     Clock,
     CheckCircle,
-    AlertCircle
+    AlertCircle,
+    X
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -175,8 +176,8 @@ function Dashboard() {
         <div className="min-h-screen bg-background flex">
             {/* Sidebar */}
             <aside className={`fixed md:sticky top-0 left-0 h-screen bg-card border-r border-border z-40 transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
-                } w-72 flex flex-col`}>
-                <div className="p-6 border-b border-border/50">
+                } w-72 flex flex-col shadow-xl md:shadow-none`}>
+                <div className="p-6 border-b border-border/50 flex justify-between items-center">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                             <User size={20} />
@@ -188,6 +189,13 @@ function Dashboard() {
                             </p>
                         </div>
                     </div>
+                    {/* Close button for mobile sidebar */}
+                    <button
+                        onClick={() => setSidebarOpen(false)}
+                        className="md:hidden text-muted-foreground hover:text-foreground"
+                    >
+                        <X size={20} />
+                    </button>
                 </div>
 
                 <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
@@ -228,20 +236,19 @@ function Dashboard() {
             )}
 
             {/* Main Content */}
-            <main className="flex-1 min-w-0 overflow-auto">
+            <main className="flex-1 min-w-0 overflow-auto h-screen">
                 {/* Mobile Header */}
                 <div className="md:hidden flex items-center justify-between p-4 border-b border-border bg-card sticky top-0 z-20">
+                    <h1 className="text-lg font-bold text-primary">BikeHub</h1>
                     <button
                         onClick={() => setSidebarOpen(true)}
-                        className="p-2 -ml-2 rounded-md text-muted-foreground hover:bg-muted"
+                        className="p-2 -mr-2 rounded-md text-muted-foreground hover:bg-muted"
                     >
                         <Menu size={24} />
                     </button>
-                    <h1 className="text-lg font-bold">Dashboard</h1>
-                    <div className="w-8"></div>
                 </div>
 
-                <div className="p-6 md:p-8 max-w-7xl mx-auto">
+                <div className="p-6 md:p-8 max-w-7xl mx-auto pb-24">
                     {loading ? (
                         <div className="flex items-center justify-center py-20">
                             <div className="h-10 w-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -250,7 +257,7 @@ function Dashboard() {
                         <>
                             {/* Overview Tab */}
                             {activeTab === 'overview' && (
-                                <div className="space-y-8">
+                                <div className="space-y-8 animate-in fade-in duration-500">
                                     <div>
                                         <h1 className="text-3xl font-bold tracking-tight text-foreground">Dashboard</h1>
                                         <p className="text-muted-foreground mt-1">Welcome back, here's what's happening today.</p>
@@ -269,13 +276,13 @@ function Dashboard() {
                                                     title="Active Bookings"
                                                     value={ownerRentals.filter(r => r.status === 'active').length}
                                                     icon={Calendar}
-                                                    color="text-emerald-500"
+                                                    color="text-emerald-600 bg-emerald-100"
                                                 />
                                                 <StatsCard
                                                     title="Total Revenue"
                                                     value={`$${ownerRentals.reduce((sum, r) => sum + parseFloat(r.total_cost || 0), 0).toFixed(2)}`}
                                                     icon={DollarSign}
-                                                    color="text-indigo-500"
+                                                    color="text-primary bg-primary/10"
                                                 />
                                             </>
                                         ) : (
@@ -289,13 +296,13 @@ function Dashboard() {
                                                     title="Active Rentals"
                                                     value={rentals.filter(r => r.status === 'active').length}
                                                     icon={Clock}
-                                                    color="text-emerald-500"
+                                                    color="text-emerald-600 bg-emerald-100"
                                                 />
                                                 <StatsCard
                                                     title="Total Spent"
                                                     value={`$${rentals.reduce((sum, r) => sum + parseFloat(r.total_cost || 0), 0).toFixed(2)}`}
                                                     icon={DollarSign}
-                                                    color="text-indigo-500"
+                                                    color="text-primary bg-primary/10"
                                                 />
                                             </>
                                         )}
@@ -309,7 +316,7 @@ function Dashboard() {
                                             {userProfile?.role === 'owner' ? (
                                                 <button
                                                     onClick={() => setShowAddBikeModal(true)}
-                                                    className="btn-primary"
+                                                    className="btn-primary shadow-lg shadow-primary/20"
                                                 >
                                                     <Plus size={18} className="mr-2" />
                                                     Add New Bike
@@ -317,7 +324,7 @@ function Dashboard() {
                                             ) : (
                                                 <button
                                                     onClick={() => navigate('/')}
-                                                    className="btn-primary"
+                                                    className="btn-primary shadow-lg shadow-primary/20"
                                                 >
                                                     Browse Bikes
                                                 </button>
@@ -329,7 +336,7 @@ function Dashboard() {
 
                             {/* My Bikes Tab (Owner) */}
                             {activeTab === 'bikes' && userProfile?.role === 'owner' && (
-                                <div className="space-y-6">
+                                <div className="space-y-6 animate-in fade-in duration-500">
                                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                         <div>
                                             <h1 className="text-2xl font-bold tracking-tight">My Bikes</h1>
@@ -337,7 +344,7 @@ function Dashboard() {
                                         </div>
                                         <button
                                             onClick={() => setShowAddBikeModal(true)}
-                                            className="btn-primary"
+                                            className="btn-primary shadow-lg shadow-primary/20"
                                         >
                                             <Plus size={18} className="mr-2" />
                                             Add Bike
@@ -346,13 +353,13 @@ function Dashboard() {
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                         {bikes.map((bike) => (
-                                            <div key={bike.id} className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-md transition-all">
-                                                <div className="h-40 bg-muted/50 flex items-center justify-center relative">
-                                                    <Bike size={48} className="text-muted-foreground/50" strokeWidth={1.5} />
+                                            <div key={bike.id} className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg transition-all duration-300">
+                                                <div className="h-40 bg-muted/30 flex items-center justify-center relative group-hover:bg-muted/50 transition-colors">
+                                                    <Bike size={48} className="text-muted-foreground/50 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
                                                     <div className="absolute top-3 right-3">
                                                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${bike.is_available
-                                                                ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400'
-                                                                : 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400'
+                                                                ? 'bg-emerald-100 text-emerald-700'
+                                                                : 'bg-amber-100 text-amber-700'
                                                             }`}>
                                                             {bike.is_available ? 'Available' : 'Rented'}
                                                         </span>
@@ -383,7 +390,7 @@ function Dashboard() {
 
                             {/* Bookings Tab (Owner) */}
                             {activeTab === 'bookings' && userProfile?.role === 'owner' && (
-                                <div className="space-y-6">
+                                <div className="space-y-6 animate-in fade-in duration-500">
                                     <div>
                                         <h1 className="text-2xl font-bold tracking-tight">Bookings</h1>
                                         <p className="text-muted-foreground">Track rental history and earnings.</p>
@@ -392,7 +399,7 @@ function Dashboard() {
                                     <div className="bg-card rounded-xl border border-border/50 shadow-sm overflow-hidden">
                                         <div className="overflow-x-auto">
                                             <table className="w-full text-sm text-left">
-                                                <thead className="bg-muted/50 text-muted-foreground font-medium border-b border-border/50">
+                                                <thead className="bg-muted/30 text-muted-foreground font-medium border-b border-border/50">
                                                     <tr>
                                                         <th className="px-6 py-4">Bike</th>
                                                         <th className="px-6 py-4">Renter</th>
@@ -403,7 +410,7 @@ function Dashboard() {
                                                 </thead>
                                                 <tbody className="divide-y divide-border/50">
                                                     {ownerRentals.map((rental) => (
-                                                        <tr key={rental.id} className="hover:bg-muted/30 transition-colors">
+                                                        <tr key={rental.id} className="hover:bg-muted/10 transition-colors">
                                                             <td className="px-6 py-4">
                                                                 <div className="font-medium text-foreground">{rental.bike_details?.brand}</div>
                                                                 <div className="text-xs text-muted-foreground">{rental.bike_details?.model}</div>
@@ -431,7 +438,7 @@ function Dashboard() {
 
                             {/* My Rentals Tab (Renter) */}
                             {activeTab === 'rentals' && userProfile?.role === 'renter' && (
-                                <div className="space-y-6">
+                                <div className="space-y-6 animate-in fade-in duration-500">
                                     <div>
                                         <h1 className="text-2xl font-bold tracking-tight">My Rentals</h1>
                                         <p className="text-muted-foreground">View your current and past rides.</p>
@@ -481,7 +488,7 @@ function Dashboard() {
 
                             {/* Settings Tab */}
                             {activeTab === 'settings' && (
-                                <div className="space-y-6">
+                                <div className="space-y-6 animate-in fade-in duration-500">
                                     <div>
                                         <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
                                         <p className="text-muted-foreground">Manage your account preferences.</p>
@@ -565,16 +572,16 @@ function Dashboard() {
 // Helper Components
 function StatsCard({ title, value, icon: Icon, trend, color }) {
     return (
-        <div className="bg-card rounded-xl border border-border/50 shadow-sm p-6">
+        <div className="bg-card rounded-xl border border-border/50 shadow-sm p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between mb-4">
                 <p className="text-sm font-medium text-muted-foreground">{title}</p>
-                <div className={`p-2 rounded-lg bg-muted/50 ${color || 'text-primary'}`}>
+                <div className={`p-2 rounded-lg ${color || 'bg-muted/50 text-foreground'}`}>
                     <Icon size={20} />
                 </div>
             </div>
             <div>
                 <h3 className="text-2xl font-bold text-foreground">{value}</h3>
-                {trend && <p className="text-xs text-emerald-500 font-medium mt-1">{trend}</p>}
+                {trend && <p className="text-xs text-emerald-600 font-medium mt-1">{trend}</p>}
             </div>
         </div>
     );
@@ -582,36 +589,15 @@ function StatsCard({ title, value, icon: Icon, trend, color }) {
 
 function StatusBadge({ status }) {
     const styles = {
-        active: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
-        completed: 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300',
-        pending: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400'
+        active: 'bg-emerald-100 text-emerald-700',
+        completed: 'bg-slate-100 text-slate-700',
+        pending: 'bg-amber-100 text-amber-700'
     };
 
     return (
         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${styles[status] || styles.pending}`}>
             {status}
         </span>
-    );
-}
-
-// Helper for X icon
-function X({ size, className }) {
-    return (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width={size}
-            height={size}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className={className}
-        >
-            <path d="M18 6 6 18" />
-            <path d="m6 6 18 18" />
-        </svg>
     );
 }
 

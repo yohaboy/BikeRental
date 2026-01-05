@@ -55,7 +55,7 @@ function HomePage() {
                             Find Your Perfect Ride
                         </h1>
                         <p className="text-xl text-muted-foreground mb-10 leading-relaxed">
-                            Premium bikes for every journey. Whether you're commuting, exploring, or adventuring, we have the right bike for you.
+                            Amazing bikes for every journey. Whether you're commuting, exploring, or adventuring, we have the right bike for you.
                         </p>
 
                         {/* Search Bar */}
