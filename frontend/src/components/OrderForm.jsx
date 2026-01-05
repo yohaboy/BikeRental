@@ -12,6 +12,21 @@ const OrderForm = ({ bikeId, onSuccess }) => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
 
+    // Array of available bike images
+    const bikeImages = [
+        '/assets/bike1.jpg',
+        '/assets/bike2.jpg',
+        '/assets/bike3.jpg',
+        '/assets/bike4.jpg'
+    ];
+
+    // Helper to get a deterministic image based on ID
+    const getBikeImage = (id) => {
+        if (!id) return bikeImages[0];
+        const index = id % bikeImages.length;
+        return bikeImages[index];
+    };
+
     const apiCall = async (url, options = {}) => {
         const makeRequest = async (token) => {
             const response = await fetch(url, {
@@ -176,11 +191,15 @@ const OrderForm = ({ bikeId, onSuccess }) => {
             {/* Bike Info */}
             <div className="bg-muted/50 rounded-xl border border-border/50 p-4 mb-6">
                 <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-card rounded-lg border border-border/50 flex items-center justify-center">
-                        <Bike className="text-primary" size={24} />
+                    <div className="w-20 h-20 bg-card rounded-lg border border-border/50 overflow-hidden flex-shrink-0">
+                        <img
+                            src={getBikeImage(bike?.id)}
+                            alt={bike?.brand}
+                            className="w-full h-full object-cover"
+                        />
                     </div>
                     <div>
-                        <h3 className="font-bold text-foreground">{bike?.brand} {bike?.model}</h3>
+                        <h3 className="font-bold text-foreground text-lg">{bike?.brand} {bike?.model}</h3>
                         <p className="text-sm text-muted-foreground capitalize">{bike?.type} Bike</p>
                     </div>
                     <div className="ml-auto text-right">

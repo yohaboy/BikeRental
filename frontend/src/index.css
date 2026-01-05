@@ -1,84 +1,69 @@
-@import "tailwindcss";
-
-@theme {
-    --color-primary: hsl(var(--primary));
-    --color-primary-foreground: hsl(var(--primary-foreground));
-    --color-secondary: hsl(var(--secondary));
-    --color-secondary-foreground: hsl(var(--secondary-foreground));
-    --color-accent: hsl(var(--accent));
-    --color-accent-foreground: hsl(var(--accent-foreground));
-    --color-destructive: hsl(var(--destructive));
-    --color-destructive-foreground: hsl(var(--destructive-foreground));
-    --color-background: hsl(var(--background));
-    --color-foreground: hsl(var(--foreground));
-    --color-card: hsl(var(--card));
-    --color-card-foreground: hsl(var(--card-foreground));
-    --color-border: hsl(var(--border));
-    --color-input: hsl(var(--input));
-    --color-ring: hsl(var(--ring));
-
-    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @layer base {
     :root {
-        /* Modern Professional Theme (Slate & Indigo) */
-        --background: 210 40% 98%;
-        --foreground: 222 47% 11%;
+        /* Vibrant Cyan Theme */
+        --background: 180 20% 98%;
+        /* Very light cyan tint */
+        --foreground: 190 50% 15%;
+        /* Dark cyan/slate for text */
 
         --card: 0 0% 100%;
-        --card-foreground: 222 47% 11%;
+        --card-foreground: 190 50% 15%;
 
-        /* Indigo Primary */
-        --primary: 243 75% 59%;
-        --primary-foreground: 210 40% 98%;
+        /* Primary Cyan */
+        --primary: 186 100% 33%;
+        /* #00a8b5 - Vibrant Cyan/Teal */
+        --primary-foreground: 0 0% 100%;
 
-        /* Slate Secondary */
-        --secondary: 215 16% 47%;
-        --secondary-foreground: 210 40% 98%;
+        /* Secondary */
+        --secondary: 186 30% 90%;
+        --secondary-foreground: 186 100% 25%;
 
-        /* Emerald Accent */
-        --accent: 151 65% 52%; /* Emerald 500 */
-        --accent-foreground: 210 40% 98%;
+        /* Accent */
+        --accent: 186 100% 33%;
+        --accent-foreground: 0 0% 100%;
 
-        --muted: 210 40% 96.1%;
-        --muted-foreground: 215 16% 47%;
+        --muted: 180 10% 94%;
+        --muted-foreground: 190 20% 50%;
 
-        --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 210 40% 98%;
+        --destructive: 0 84% 60%;
+        --destructive-foreground: 0 0% 100%;
 
-        --border: 214.3 31.8% 91.4%;
-        --input: 214.3 31.8% 91.4%;
-        --ring: 243 75% 59%;
+        --border: 186 20% 88%;
+        --input: 186 20% 88%;
+        --ring: 186 100% 33%;
 
-        --radius: 0.75rem;
+        --radius: 1rem;
     }
 
     .dark {
-        --background: 222 47% 11%;
-        --foreground: 210 40% 98%;
+        --background: 190 50% 10%;
+        --foreground: 180 20% 98%;
 
-        --card: 222 47% 11%;
-        --card-foreground: 210 40% 98%;
+        --card: 190 50% 13%;
+        --card-foreground: 180 20% 98%;
 
-        --primary: 243 75% 59%;
-        --primary-foreground: 210 40% 98%;
+        --primary: 186 80% 45%;
+        --primary-foreground: 0 0% 100%;
 
-        --secondary: 215 16% 47%;
-        --secondary-foreground: 210 40% 98%;
+        --secondary: 190 30% 20%;
+        --secondary-foreground: 180 20% 98%;
 
-        --accent: 151 65% 52%;
-        --accent-foreground: 210 40% 98%;
+        --accent: 186 80% 45%;
+        --accent-foreground: 0 0% 100%;
 
-        --muted: 217.2 32.6% 17.5%;
-        --muted-foreground: 215 20.2% 65.1%;
+        --muted: 190 30% 20%;
+        --muted-foreground: 190 20% 65%;
 
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 210 40% 98%;
+        --destructive: 0 62% 30%;
+        --destructive-foreground: 180 20% 98%;
 
-        --border: 217.2 32.6% 17.5%;
-        --input: 217.2 32.6% 17.5%;
-        --ring: 243 75% 59%;
+        --border: 190 30% 20%;
+        --input: 190 30% 20%;
+        --ring: 186 80% 45%;
     }
 }
 
@@ -88,76 +73,45 @@
     }
 
     body {
-        @apply bg-background text-foreground font-sans antialiased;
+        @apply bg-background text-foreground;
         font-feature-settings: "rlig" 1, "calt" 1;
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-        @apply font-bold tracking-tight;
     }
 }
 
 @layer components {
-    /* Modern Card */
     .card-shadow {
-        @apply bg-card rounded-xl border border-border/50 transition-all duration-300;
-        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+        @apply shadow-[0_8px_30px_rgb(0, 0, 0, 0.04)] hover:shadow-[0_8px_30px_rgb(0, 0, 0, 0.08)] transition-all duration-300;
     }
 
-    .card-shadow:hover {
-        @apply border-primary/20;
-        box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
-        transform: translateY(-2px);
-    }
-
-    /* Modern Primary Button */
     .btn-primary {
-        @apply inline-flex items-center justify-center rounded-lg px-6 py-2.5 text-sm font-semibold text-primary-foreground bg-primary transition-all duration-200 shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50 disabled:pointer-events-none;
+        @apply inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:bg-primary/90 hover:shadow-primary/40 hover:-translate-y-0.5 active:translate-y-0 active:shadow-sm disabled:pointer-events-none disabled:opacity-50;
     }
 
-    /* Modern Secondary Button */
     .btn-secondary {
-        @apply inline-flex items-center justify-center rounded-lg px-6 py-2.5 text-sm font-semibold text-secondary-foreground bg-secondary transition-all duration-200 shadow-sm hover:bg-secondary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary disabled:opacity-50 disabled:pointer-events-none;
+        @apply inline-flex items-center justify-center rounded-xl bg-secondary px-6 py-3 text-sm font-bold text-secondary-foreground shadow-sm transition-all hover:bg-secondary/80 hover:-translate-y-0.5 active:translate-y-0 disabled:pointer-events-none disabled:opacity-50;
     }
 
-    /* Modern Outline Button */
     .btn-outline {
-        @apply inline-flex items-center justify-center rounded-lg px-6 py-2.5 text-sm font-semibold text-foreground bg-transparent border border-input transition-all duration-200 shadow-sm hover:bg-accent hover:text-accent-foreground disabled:opacity-50 disabled:pointer-events-none;
+        @apply inline-flex items-center justify-center rounded-xl border-2 border-primary/20 bg-transparent px-6 py-3 text-sm font-bold text-primary transition-all hover:border-primary hover:bg-primary/5 active:bg-primary/10 disabled:pointer-events-none disabled:opacity-50;
     }
 
-    /* Modern Input */
     .input-shadow {
-        @apply flex h-11 w-full rounded-lg border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50;
+        @apply w-full rounded-xl border border-border bg-background px-4 py-3 text-sm ring-offset-background transition-all placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50;
     }
 
-    /* Modern Badge */
     .badge {
         @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
     }
-    
-    /* Section Shadow - subtle divider */
-    .section-shadow {
-        @apply border-b border-border/40 bg-card/50 backdrop-blur-sm;
+
+    .text-display {
+        @apply text-4xl font-black tracking-tight sm:text-5xl md:text-6xl lg:text-7xl text-foreground;
     }
-}
 
-/* Grid system */
-.grid-clean {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
-}
+    .text-heading {
+        @apply text-2xl font-bold tracking-tight sm:text-3xl text-foreground;
+    }
 
-/* Typography scale */
-.text-display {
-    @apply text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground;
-    line-height: 1.1;
-}
-
-.text-heading {
-    @apply text-2xl md:text-3xl font-bold tracking-tight text-foreground;
-}
-
-.text-body {
-    @apply text-base leading-relaxed text-muted-foreground;
+    .text-body {
+        @apply text-base text-muted-foreground leading-relaxed;
+    }
 }

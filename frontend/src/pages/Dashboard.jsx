@@ -30,6 +30,21 @@ function Dashboard() {
     const { logout } = useAuth();
     const navigate = useNavigate();
 
+    // Array of available bike images
+    const bikeImages = [
+        '/assets/bike1.jpg',
+        '/assets/bike2.jpg',
+        '/assets/bike3.jpg',
+        '/assets/bike4.jpg'
+    ];
+
+    // Helper to get a deterministic image based on ID
+    const getBikeImage = (id) => {
+        if (!id) return bikeImages[0];
+        const index = id % bikeImages.length;
+        return bikeImages[index];
+    };
+
     const apiCall = async (url, options = {}) => {
         const makeRequest = async (token) => {
             const response = await fetch(url, {
@@ -354,10 +369,14 @@ function Dashboard() {
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                         {bikes.map((bike) => (
                                             <div key={bike.id} className="group bg-card rounded-xl border border-border/50 overflow-hidden hover:shadow-lg transition-all duration-300">
-                                                <div className="h-40 bg-muted/30 flex items-center justify-center relative group-hover:bg-muted/50 transition-colors">
-                                                    <Bike size={48} className="text-muted-foreground/50 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
+                                                <div className="h-48 bg-muted relative overflow-hidden">
+                                                    <img
+                                                        src={getBikeImage(bike.id)}
+                                                        alt={bike.brand}
+                                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                                    />
                                                     <div className="absolute top-3 right-3">
-                                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${bike.is_available
+                                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium shadow-sm ${bike.is_available
                                                                 ? 'bg-emerald-100 text-emerald-700'
                                                                 : 'bg-amber-100 text-amber-700'
                                                             }`}>
@@ -412,8 +431,19 @@ function Dashboard() {
                                                     {ownerRentals.map((rental) => (
                                                         <tr key={rental.id} className="hover:bg-muted/10 transition-colors">
                                                             <td className="px-6 py-4">
-                                                                <div className="font-medium text-foreground">{rental.bike_details?.brand}</div>
-                                                                <div className="text-xs text-muted-foreground">{rental.bike_details?.model}</div>
+                                                                <div className="flex items-center gap-3">
+                                                                    <div className="w-10 h-10 rounded-lg overflow-hidden bg-muted">
+                                                                        <img
+                                                                            src={getBikeImage(rental.bike_details?.id)}
+                                                                            alt="Bike"
+                                                                            className="w-full h-full object-cover"
+                                                                        />
+                                                                    </div>
+                                                                    <div>
+                                                                        <div className="font-medium text-foreground">{rental.bike_details?.brand}</div>
+                                                                        <div className="text-xs text-muted-foreground">{rental.bike_details?.model}</div>
+                                                                    </div>
+                                                                </div>
                                                             </td>
                                                             <td className="px-6 py-4">{rental.renter_username}</td>
                                                             <td className="px-6 py-4">
@@ -448,8 +478,12 @@ function Dashboard() {
                                         {rentals.map((rental) => (
                                             <div key={rental.id} className="bg-card rounded-xl border border-border/50 p-6 flex flex-col md:flex-row gap-6 items-start md:items-center justify-between hover:shadow-md transition-all">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
-                                                        <Bike size={24} />
+                                                    <div className="w-20 h-20 bg-muted rounded-lg overflow-hidden flex-shrink-0">
+                                                        <img
+                                                            src={getBikeImage(rental.bike_details?.id)}
+                                                            alt="Bike"
+                                                            className="w-full h-full object-cover"
+                                                        />
                                                     </div>
                                                     <div>
                                                         <h3 className="font-semibold text-lg">{rental.bike_details?.brand} {rental.bike_details?.model}</h3>
