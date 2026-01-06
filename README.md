@@ -1,180 +1,128 @@
-# AddisBike - Role-Based Bike Rental Platform
+# AddisBike - Bike Rental Platform
 
-## Overview
-AddisBike is a comprehensive bike rental platform with role-based access control, supporting both bike owners and renters.
+AddisBike is a comprehensive, role-based bike rental application designed to modernize urban transportation. It serves as a bridge between bike owners looking to monetize their idle assets and renters seeking efficient, eco-friendly city transit.
 
-## User Roles
+The platform features a distinctive "Tech Grid" aesthetic—a futuristic, high-contrast interface with sharp corners and technical design elements—providing a premium and responsive user experience.
 
-### 1. **Bike Owner**
-- List and manage bikes
-- View bookings for their bikes
-- Track revenue from rentals
-- Add/delete bikes from inventory
+## 🚀 Key Features
 
-### 2. **Bike Renter**
-- Browse available bikes
-- Book bikes with specific dates and times
-- View rental history
-- Complete active rentals
+### 👥 Role-Based Access Control
+The system is built around two distinct user roles, each with a tailored dashboard and feature set:
 
-## Key Features
+**1. Bike Owners**
+*   **Fleet Management:** Add, edit, and delete bikes from your personal fleet.
+*   **Rental Tracking:** View active and past bookings for all your listed units.
+*   **Revenue Monitoring:** Track earnings from completed rentals.
+*   **Availability Control:** Real-time status updates for your bikes.
 
-### Backend Updates
+**2. Renters**
+*   **Smart Search:** Filter bikes by type (Road, Mountain, Electric, etc.) and price.
+*   **Seamless Booking:** Intuitive booking flow with immediate cost estimation.
+*   **Rental History:** Keep track of all your rides and expenditures.
+*   **Active Ride Management:** Monitor ongoing rentals and complete them with a single click.
 
-#### Models (`bike/models.py`)
-1. **UserProfile** - Stores user role (owner/renter) and additional info
-2. **Bike** - Enhanced with type choices, descriptions, timestamps
-3. **Rental** - Updated with status tracking (pending, active, completed, cancelled)
+### 🎨 User Interface 
+*   **Futuristic Design:** Sharp corners, technical borders, and a grid-based layout.
+*   **Responsive:** Fully optimized for desktop and mobile devices.
+*   **Interactive:** Dynamic hover effects, status badges, and smooth transitions.
+*   **Dark/Light Mode Ready:** Built with Tailwind CSS variables for easy theming.
 
-#### API Endpoints
-- `POST /api/register/` - Register with role selection
-- `GET/PUT /api/profile/` - Manage user profile
-- `GET /api/my_bikes/` - Owner's bikes
-- `GET /api/owner_rentals/` - Rentals for owner's bikes
-- `GET /api/rentals/` - Renter's rentals
-- `POST /api/rentals/` - Create new rental
-- `PUT /api/rentals/<id>/` - Complete rental
-- `DELETE /api/rentals/<id>/` - Cancel rental
-
-### Frontend Updates
-
-#### 1. **Registration with Role Selection**
-- Users choose between "Rent Bikes" or "List Bikes"
-- Visual role selector with icons
-- Role is saved to user profile
-
-#### 2. **Improved Booking Form**
-- Separate date and time inputs for better UX
-- Pickup Date + Pickup Time
-- Return Date + Return Time
-- Real-time duration and price calculation
-- Input validation
-
-#### 3. **Role-Based Dashboard with Sidebar**
-
-**Sidebar Navigation:**
-- Overview
-- My Bikes (Owner) / My Rentals (Renter)
-- Bookings (Owner)
-- Settings
-- Logout
-
-**Owner Dashboard:**
-- **Overview Tab:**
-  - Total bikes count
-  - Active bookings count
-  - Total revenue
-  - Quick action: Add New Bike
-
-- **My Bikes Tab:**
-  - Grid view of all bikes
-  - Availability status badges
-  - Delete bike functionality
-  - Add new bike modal
-
-- **Bookings Tab:**
-  - Table view of all rentals for owned bikes
-  - Renter information
-  - Rental status tracking
-  - Revenue per booking
-
-**Renter Dashboard:**
-- **Overview Tab:**
-  - Total rentals count
-  - Active rentals count
-  - Total spent
-  - Quick action: Browse Bikes
-
-- **My Rentals Tab:**
-  - Card view of all rentals
-  - Rental status (active/completed)
-  - Pickup and return times
-  - Complete rental button for active rentals
-
-**Settings Tab (Both):**
-- View profile information
-- Username, email, role display
-
-## Design Features
-
-### Color Scheme
-- **Primary:** Burnt Orange (#F97316)
-- **Secondary:** Coral (#FB923C)
-- **Accent:** Terracotta (#EA580C)
-- **Background:** Warm peachy-white with subtle orange tints
-
-### UI Components
-- **Shadows:** Warm orange-tinted shadows throughout
-- **Cards:** Clean white cards with subtle shadows
-- **Buttons:** Solid colors with hover lift effects
-- **Inputs:** Inset shadows for depth
-- **Badges:** Color-coded status indicators
-
-### Responsive Design
-- Mobile-friendly sidebar (hamburger menu)
-- Responsive grid layouts
-- Touch-friendly buttons and inputs
-- Optimized for all screen sizes
-
-## How to Use
-
-### For Bike Owners:
-1. Register and select "List Bikes"
-2. Login to dashboard
-3. Add bikes via "Add New Bike" button
-4. View bookings in "Bookings" tab
-5. Track revenue in overview
-
-### For Bike Renters:
-1. Register and select "Rent Bikes"
-2. Browse bikes on home page
-3. Click "Book Now" on desired bike
-4. Select pickup and return dates/times
-5. Confirm booking
-6. View rentals in dashboard
-7. Complete rental when done
-
-## Technical Stack
-
-### Backend
-- Django REST Framework
-- JWT Authentication
-- PostgreSQL/SQLite
-- Role-based permissions
+## 🛠️ Technology Stack
 
 ### Frontend
-- React
-- React Router
-- Lucide Icons
-- Tailwind CSS (custom theme)
-- Warm orange color palette
+*   **Framework:** React (Vite)
+*   **Styling:** Tailwind CSS v4
+*   **Routing:** React Router DOM
+*   **Icons:** Lucide React
+*   **State Management:** React Context API (AuthContext)
 
-## API Authentication
-All protected endpoints require JWT token:
+### Backend
+*   **Framework:** Django REST Framework (DRF)
+*   **Authentication:** JWT (JSON Web Tokens) via `simplejwt`
+*   **Database:** SQLite (Development Default)
+*   **CORS:** `django-cors-headers` for secure frontend-backend communication
+
+## 🔌 API Endpoints
+
+The backend exposes a comprehensive REST API. Key endpoints include:
+
+*   **Auth:** `/api/register/`, `/api/login/`, `/api/token/refresh/`
+*   **Bikes:** `/api/bikes/` (List/Create), `/api/bikes/<id>/` (Detail/Delete)
+*   **Rentals:** `/api/rentals/` (List/Create), `/api/rentals/<id>/` (Complete)
+*   **User:** `/api/profile/`, `/api/my_bikes/`, `/api/owner_rentals/`
+
+## 💻 Installation & Setup
+
+Follow these steps to get the project running locally.
+
+### Prerequisites
+*   Node.js (v16+)
+*   Python (v3.8+)
+
+### 1. Backend Setup
+Navigate to the backend directory and set up the Python environment.
+
+```bash
+cd backend
+
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# Windows:
+venv\Scripts\activate
+# Linux/Mac:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run migrations
+python manage.py migrate
+
+# Start the server
+python manage.py runserver
 ```
-Authorization: Bearer <access_token>
+The backend will run at `http://127.0.0.1:8000`.
+
+### 2. Frontend Setup
+Open a new terminal, navigate to the frontend directory, and start the React app.
+
+```bash
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+The frontend will run at `http://localhost:5173`.
+
+## 📂 Project Structure
+
+```
+BikeRental/
+├── backend/                # Django Project
+│   ├── RentBike/          # Project settings
+│   ├── bike/              # Main app (models, views, serializers)
+│   └── manage.py
+│
+├── frontend/               # React Application
+│   ├── src/
+│   │   ├── components/    # Reusable UI components (NavBar, Forms)
+│   │   ├── context/       # AuthContext provider
+│   │   ├── pages/         # Page components (Home, Dashboard, Login)
+│   │   └── index.css      # Global styles & Tailwind theme
+│   └── package.json
+│
+└── README.md
 ```
 
-Token refresh endpoint available at `/api/token/refresh/`
+## 🤝 Contributing
 
-## Status Tracking
-
-### Rental Statuses:
-- **pending** - Booking created, not started
-- **active** - Currently renting
-- **completed** - Rental finished
-- **cancelled** - Booking cancelled
-
-### Bike Availability:
-- Automatically updated when rental is created/completed
-- Owners can see availability status in dashboard
-
-## Future Enhancements
-- Payment integration
-- Bike ratings and reviews
-- Advanced search filters
-- Bike photos upload
-- Rental calendar view
-- Email notifications
-- Damage reports
-- Insurance options
+1.  Fork the repository.
+2.  Create a feature branch (`git checkout -b feature/NewFeature`).
+3.  Commit your changes.
+4.  Push to the branch.
+5.  Open a Pull Request.
