@@ -264,7 +264,7 @@ function HomePage() {
                                                 disabled
                                                 className="btn-secondary px-6 py-3 rounded-2xl opacity-50 cursor-not-allowed"
                                             >
-                                                Owner View
+                                                Owners View
                                             </button>
                                         )}
                                     </div>

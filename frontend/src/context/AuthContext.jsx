@@ -6,19 +6,41 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const fetchUser = async (token) => {
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/profile/', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const userData = await response.json();
+                setUser(userData);
+            } else {
+                logout();
+            }
+        } catch (error) {
+            console.error('Error fetching user profile:', error);
+            logout();
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         const token = localStorage.getItem('access_token');
         if (token) {
-            // In a real app, you might want to fetch user details here
-            setUser({ loggedIn: true });
+            fetchUser(token);
+        } else {
+            setLoading(false);
         }
-        setLoading(false);
     }, []);
 
-    const login = (accessToken, refreshToken) => {
+    const login = async (accessToken, refreshToken) => {
         localStorage.setItem('access_token', accessToken);
         localStorage.setItem('refresh_token', refreshToken);
-        setUser({ loggedIn: true });
+        await fetchUser(accessToken);
     };
 
     const logout = () => {
