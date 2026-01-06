@@ -254,7 +254,7 @@ function Dashboard() {
             <main className="flex-1 min-w-0 overflow-auto h-screen">
                 {/* Mobile Header */}
                 <div className="md:hidden flex items-center justify-between p-4 border-b border-border bg-card sticky top-0 z-20">
-                    <h1 className="text-lg font-bold text-primary">BikeHub</h1>
+                    <h1 className="text-lg font-bold text-primary">AddisBike</h1>
                     <button
                         onClick={() => setSidebarOpen(true)}
                         className="p-2 -mr-2 rounded-md text-muted-foreground hover:bg-muted"
@@ -377,8 +377,8 @@ function Dashboard() {
                                                     />
                                                     <div className="absolute top-3 right-3">
                                                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium shadow-sm ${bike.is_available
-                                                                ? 'bg-emerald-100 text-emerald-700'
-                                                                : 'bg-amber-100 text-amber-700'
+                                                            ? 'bg-emerald-100 text-emerald-700'
+                                                            : 'bg-amber-100 text-amber-700'
                                                             }`}>
                                                             {bike.is_available ? 'Available' : 'Rented'}
                                                         </span>

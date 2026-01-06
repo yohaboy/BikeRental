@@ -24,7 +24,7 @@ function NavBar() {
                             <Bike size={20} strokeWidth={2.5} />
                         </div>
                         <span className="font-bold text-xl tracking-tight text-foreground">
-                            BikeHub
+                            AddisBike
                         </span>
                     </Link>
 

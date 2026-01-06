@@ -58,11 +58,8 @@ function Register() {
         <div className="min-h-screen flex items-center justify-center p-4 bg-background">
             <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary text-primary-foreground mb-4">
-                        <UserPlus size={24} />
-                    </div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground">Create an account</h1>
-                    <p className="text-muted-foreground mt-2">Join BikeHub to start your journey</p>
+                    <p className="text-muted-foreground mt-2">Join AddisBike to start your journey</p>
                 </div>
 
                 <div className="bg-card rounded-xl border border-border/50 shadow-sm p-8">

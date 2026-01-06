@@ -13,7 +13,6 @@ function HomePage() {
     const [selectedBikeId, setSelectedBikeId] = useState(null);
     const [showOrderForm, setShowOrderForm] = useState(false);
 
-    // Array of available bike images
     const bikeImages = [
         '/assets/bike1.jpg',
         '/assets/bike2.jpg',
@@ -21,7 +20,6 @@ function HomePage() {
         '/assets/bike4.jpg'
     ];
 
-    // Helper to get a deterministic image based on ID
     const getBikeImage = (id) => {
         const index = id % bikeImages.length;
         return bikeImages[index];
@@ -59,7 +57,7 @@ function HomePage() {
 
     return (
         <div className="min-h-screen pb-20 bg-background">
-            {/* Modern Split Hero Section */}
+            {/*Hero Section */}
             <section className="relative overflow-hidden pt-10 lg:pt-20 pb-20 lg:pb-32">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
@@ -111,17 +109,6 @@ function HomePage() {
                             />
 
                             {/* Floating Card */}
-                            <div className="absolute -bottom-6 -left-6 bg-card p-4 rounded-2xl shadow-xl border border-border/50 hidden md:block animate-in slide-in-from-bottom-4 duration-700 delay-300">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
-                                        <Star size={24} fill="currentColor" />
-                                    </div>
-                                    <div>
-                                        <p className="font-bold text-lg">4.9/5 Rating</p>
-                                        <p className="text-sm text-muted-foreground">Based on 2k+ reviews</p>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>

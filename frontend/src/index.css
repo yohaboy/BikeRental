@@ -1,33 +1,62 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+    --color-background: hsl(var(--background));
+    --color-foreground: hsl(var(--foreground));
+
+    --color-card: hsl(var(--card));
+    --color-card-foreground: hsl(var(--card-foreground));
+
+    --color-popover: hsl(var(--popover));
+    --color-popover-foreground: hsl(var(--popover-foreground));
+
+    --color-primary: hsl(var(--primary));
+    --color-primary-foreground: hsl(var(--primary-foreground));
+
+    --color-secondary: hsl(var(--secondary));
+    --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+    --color-muted: hsl(var(--muted));
+    --color-muted-foreground: hsl(var(--muted-foreground));
+
+    --color-accent: hsl(var(--accent));
+    --color-accent-foreground: hsl(var(--accent-foreground));
+
+    --color-destructive: hsl(var(--destructive));
+    --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+    --color-border: hsl(var(--border));
+    --color-input: hsl(var(--input));
+    --color-ring: hsl(var(--ring));
+
+    --radius-lg: var(--radius);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-sm: calc(var(--radius) - 4px);
+}
 
 @layer base {
     :root {
         /* Vibrant Cyan Theme */
         --background: 180 20% 98%;
-        /* Very light cyan tint */
         --foreground: 190 50% 15%;
-        /* Dark cyan/slate for text */
 
         --card: 0 0% 100%;
         --card-foreground: 190 50% 15%;
 
-        /* Primary Cyan */
+        --popover: 0 0% 100%;
+        --popover-foreground: 190 50% 15%;
+
         --primary: 186 100% 33%;
-        /* #00a8b5 - Vibrant Cyan/Teal */
         --primary-foreground: 0 0% 100%;
 
-        /* Secondary */
         --secondary: 186 30% 90%;
         --secondary-foreground: 186 100% 25%;
 
-        /* Accent */
-        --accent: 186 100% 33%;
-        --accent-foreground: 0 0% 100%;
-
         --muted: 180 10% 94%;
         --muted-foreground: 190 20% 50%;
+
+        --accent: 186 100% 33%;
+        --accent-foreground: 0 0% 100%;
 
         --destructive: 0 84% 60%;
         --destructive-foreground: 0 0% 100%;
@@ -46,17 +75,20 @@
         --card: 190 50% 13%;
         --card-foreground: 180 20% 98%;
 
+        --popover: 190 50% 13%;
+        --popover-foreground: 180 20% 98%;
+
         --primary: 186 80% 45%;
         --primary-foreground: 0 0% 100%;
 
         --secondary: 190 30% 20%;
         --secondary-foreground: 180 20% 98%;
 
-        --accent: 186 80% 45%;
-        --accent-foreground: 0 0% 100%;
-
         --muted: 190 30% 20%;
         --muted-foreground: 190 20% 65%;
+
+        --accent: 186 80% 45%;
+        --accent-foreground: 0 0% 100%;
 
         --destructive: 0 62% 30%;
         --destructive-foreground: 180 20% 98%;
@@ -65,22 +97,23 @@
         --input: 190 30% 20%;
         --ring: 186 80% 45%;
     }
-}
 
-@layer base {
     * {
-        @apply border-border;
+        border-color: hsl(var(--border));
+        border-style: solid;
+        border-width: 0;
     }
 
     body {
-        @apply bg-background text-foreground;
+        background-color: hsl(var(--background));
+        color: hsl(var(--foreground));
         font-feature-settings: "rlig" 1, "calt" 1;
     }
 }
 
 @layer components {
     .card-shadow {
-        @apply shadow-[0_8px_30px_rgb(0, 0, 0, 0.04)] hover:shadow-[0_8px_30px_rgb(0, 0, 0, 0.08)] transition-all duration-300;
+        @apply shadow-[0_8px_30px_#0000000a] hover:shadow-[0_8px_30px_#00000014] transition-all duration-300;
     }
 
     .btn-primary {

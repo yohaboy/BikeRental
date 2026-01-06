@@ -1,7 +1,7 @@
-# BikeHub - Role-Based Bike Rental Platform
+# AddisBike - Role-Based Bike Rental Platform
 
 ## Overview
-BikeHub is a comprehensive bike rental platform with role-based access control, supporting both bike owners and renters.
+AddisBike is a comprehensive bike rental platform with role-based access control, supporting both bike owners and renters.
 
 ## User Roles
 
