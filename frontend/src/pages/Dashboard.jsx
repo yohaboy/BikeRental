@@ -3,16 +3,14 @@ import {
     LayoutDashboard,
     Bike,
     Calendar,
-    Settings,
     LogOut,
     Plus,
     Menu,
     User,
     DollarSign,
     Clock,
-    CheckCircle,
-    AlertCircle,
-    X
+    X,
+    Home
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -227,8 +225,13 @@ function Dashboard() {
                     )}
 
                     <div className="my-4 border-t border-border/50"></div>
-                    <p className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Account</p>
-                    <SidebarLink icon={Settings} label="Settings" tab="settings" />
+                    <button
+                        onClick={() => navigate('/')}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-all text-sm font-medium"
+                    >
+                        <Home size={18} />
+                        <span>Back to Home</span>
+                    </button>
                 </nav>
 
                 <div className="p-4 border-t border-border/50">
@@ -516,57 +519,6 @@ function Dashboard() {
                                                 </div>
                                             </div>
                                         ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Settings Tab */}
-                            {activeTab === 'settings' && (
-                                <div className="space-y-6 animate-in fade-in duration-500">
-                                    <div>
-                                        <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
-                                        <p className="text-muted-foreground">Manage your account preferences.</p>
-                                    </div>
-
-                                    <div className="bg-card rounded-xl border border-border/50 shadow-sm max-w-2xl">
-                                        <div className="p-6 border-b border-border/50">
-                                            <h2 className="font-semibold text-lg">Profile Information</h2>
-                                        </div>
-                                        <div className="p-6 space-y-4">
-                                            <div>
-                                                <label className="block text-sm font-medium text-foreground mb-1.5">
-                                                    Username
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    value={userProfile?.username || ''}
-                                                    disabled
-                                                    className="input-shadow bg-muted/50"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-medium text-foreground mb-1.5">
-                                                    Email
-                                                </label>
-                                                <input
-                                                    type="email"
-                                                    value={userProfile?.email || ''}
-                                                    disabled
-                                                    className="input-shadow bg-muted/50"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-medium text-foreground mb-1.5">
-                                                    Role
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    value={userProfile?.role || ''}
-                                                    disabled
-                                                    className="input-shadow bg-muted/50 capitalize"
-                                                />
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             )}

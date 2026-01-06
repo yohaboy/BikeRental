@@ -37,13 +37,13 @@ function NavBar() {
                             Home
                         </Link>
                         <Link
-                            to="/"
+                            to="/about"
                             className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
                         >
                             About
                         </Link>
                         <Link
-                            to="/"
+                            to="/contact"
                             className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
                         >
                             Contact
@@ -107,14 +107,14 @@ function NavBar() {
                             Home
                         </Link>
                         <Link
-                            to="/"
+                            to="/about"
                             onClick={() => setMobileMenuOpen(false)}
                             className="block px-4 py-3 rounded-xl text-base font-medium text-foreground hover:bg-muted/50 transition-colors"
                         >
                             About
                         </Link>
                         <Link
-                            to="/"
+                            to="/contact"
                             onClick={() => setMobileMenuOpen(false)}
                             className="block px-4 py-3 rounded-xl text-base font-medium text-foreground hover:bg-muted/50 transition-colors"
                         >

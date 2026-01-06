@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Bike as BikeIcon, Clock, MapPin, Star, Filter, ArrowRight } from 'lucide-react';
+import { Search, Bike as BikeIcon, Clock, MapPin, Star, Filter, ArrowRight, X } from 'lucide-react';
 import OrderForm from '../components/OrderForm';
+import { useAuth } from '../context/AuthContext';
 
 function HomePage() {
     const [searchTerm, setSearchTerm] = useState('');
@@ -12,6 +13,7 @@ function HomePage() {
     const [loading, setLoading] = useState(true);
     const [selectedBikeId, setSelectedBikeId] = useState(null);
     const [showOrderForm, setShowOrderForm] = useState(false);
+    const { user } = useAuth();
 
     const bikeImages = [
         '/assets/bike1.jpg',
@@ -51,6 +53,10 @@ function HomePage() {
     }, [searchTerm, selectedFilter]);
 
     const handleOrderClick = (bikeId) => {
+        if (user && user.role === 'owner') {
+            alert("Bike owners cannot rent bikes. Please log in as a renter.");
+            return;
+        }
         setSelectedBikeId(bikeId);
         setShowOrderForm(true);
     };
@@ -107,8 +113,6 @@ function HomePage() {
                                 alt="Hero Bike"
                                 className="relative z-10 w-full h-auto max-h-[500px] object-cover rounded-[2.5rem] shadow-2xl shadow-primary/20 transform hover:scale-[1.02] transition-transform duration-500"
                             />
-
-                            {/* Floating Card */}
                         </div>
                     </div>
                 </div>
@@ -248,12 +252,21 @@ function HomePage() {
                                                 <span className="text-sm font-medium text-muted-foreground">/hr</span>
                                             </div>
                                         </div>
-                                        <button
-                                            onClick={() => handleOrderClick(bike.id)}
-                                            className="btn-primary px-6 py-3 rounded-2xl"
-                                        >
-                                            Book Now
-                                        </button>
+                                        {(!user || user.role === 'renter') ? (
+                                            <button
+                                                onClick={() => handleOrderClick(bike.id)}
+                                                className="btn-primary px-6 py-3 rounded-2xl"
+                                            >
+                                                Book Now
+                                            </button>
+                                        ) : (
+                                            <button
+                                                disabled
+                                                className="btn-secondary px-6 py-3 rounded-2xl opacity-50 cursor-not-allowed"
+                                            >
+                                                Owner View
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -322,26 +335,6 @@ function CheckCircle({ size, className }) {
         >
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
             <polyline points="22 4 12 14.01 9 11.01" />
-        </svg>
-    );
-}
-
-function X({ size, className }) {
-    return (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width={size}
-            height={size}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className={className}
-        >
-            <path d="M18 6 6 18" />
-            <path d="m6 6 18 18" />
         </svg>
     );
 }
