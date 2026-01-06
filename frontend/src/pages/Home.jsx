@@ -74,9 +74,10 @@ function HomePage() {
                             </div>
 
                             <h1 className="text-display leading-none">
-                                Urban <span className="text-primary">Mobility</span><br />
-                                Redefined
+                                Rent <span className="text-primary">Your Ride</span><br />
+                                And Go
                             </h1>
+
 
                             <p className="text-body max-w-xl mx-auto lg:mx-0">
                                 Access our premium fleet of urban transport units. Optimized for city navigation and rapid transit. Secure your vehicle today.
@@ -84,12 +85,12 @@ function HomePage() {
 
                             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
                                 <button onClick={() => document.getElementById('browse-bikes').scrollIntoView({ behavior: 'smooth' })} className="btn-primary w-full sm:w-auto">
-                                    Initialize Rental
+                                    Explore Bikes
                                     <ChevronRight className="ml-2 h-4 w-4" />
                                 </button>
-                                <button className="btn-outline w-full sm:w-auto">
-                                    View Grid Map
-                                </button>
+                                <a href="/login" className="btn-outline w-full sm:w-auto">
+                                    Get Started
+                                </a>
                             </div>
 
                             <div className="pt-8 flex items-center justify-center lg:justify-start gap-8 text-muted-foreground text-xs uppercase tracking-wider font-bold">
@@ -109,7 +110,7 @@ function HomePage() {
                                 <img
                                     src="/assets/bike2.jpg"
                                     alt="Hero Bike"
-                                    className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500"
+                                    className="w-full h-full object-cover hover:grayscale-0 transition-all duration-500"
                                 />
                                 <div className="absolute bottom-6 right-6 bg-background/90 border border-primary p-4 max-w-xs hidden md:block">
                                     <div className="text-xs text-primary uppercase tracking-widest mb-1">Featured Unit</div>
@@ -211,7 +212,7 @@ function HomePage() {
                                     <img
                                         src={getBikeImage(bike.id)}
                                         alt={`${bike.brand} ${bike.model}`}
-                                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                                        className="w-full h-full object-cover group-hover:grayscale-0 transition-all duration-500"
                                     />
 
                                     <div className="absolute top-2 right-2">

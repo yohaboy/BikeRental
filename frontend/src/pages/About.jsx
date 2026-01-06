@@ -68,7 +68,7 @@ function About() {
                                 <img
                                     src="/assets/bike3.jpg"
                                     alt="Our Story"
-                                    className="w-full h-auto grayscale hover:grayscale-0 transition-all duration-500"
+                                    className="w-full h-auto hover:grayscale-0 transition-all duration-500"
                                 />
                             </div>
                         </div>

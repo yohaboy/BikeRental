@@ -15,7 +15,7 @@ function Login() {
         setError('');
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/token/', {
+            const response = await fetch('http://127.0.0.1:8000/api/login/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -37,21 +37,10 @@ function Login() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-            {/* Background Grid Effect */}
-            <div className="absolute inset-0 z-0 opacity-20 pointer-events-none"
-                style={{
-                    backgroundImage: `linear-gradient(to right, var(--color-primary) 1px, transparent 1px), linear-gradient(to bottom, var(--color-primary) 1px, transparent 1px)`,
-                    backgroundSize: '40px 40px'
-                }}
-            ></div>
-
             <div className="max-w-md w-full space-y-8 relative z-10">
                 <div className="text-center">
-                    <div className="mx-auto h-16 w-16 bg-primary flex items-center justify-center text-primary-foreground mb-6">
-                        <Bike size={32} strokeWidth={2} />
-                    </div>
                     <h2 className="text-heading">
-                        Access Terminal
+                        Welcome Back
                     </h2>
                     <p className="mt-2 text-body uppercase tracking-wider">
                         Enter credentials to proceed
@@ -114,9 +103,9 @@ function Login() {
 
                     <div className="mt-6 text-center">
                         <p className="text-xs text-muted-foreground uppercase tracking-wider">
-                            No access credentials?{' '}
+                            Don't have an account?{' '}
                             <Link to="/register" className="font-bold text-primary hover:text-primary/80 transition-colors">
-                                Initialize Registration
+                                Register
                             </Link>
                         </p>
                     </div>

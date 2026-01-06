@@ -381,7 +381,7 @@ function Dashboard() {
                                                     <img
                                                         src={getBikeImage(bike.id)}
                                                         alt={bike.brand}
-                                                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                                                        className="w-full h-full object-cover group-hover:grayscale-0 transition-all duration-500"
                                                     />
                                                     <div className="absolute top-2 right-2">
                                                         <span className={`inline-flex items-center px-2 py-1 text-[10px] font-bold uppercase tracking-wider border ${bike.is_available
@@ -443,7 +443,7 @@ function Dashboard() {
                                                                         <img
                                                                             src={getBikeImage(rental.bike_details?.id)}
                                                                             alt="Bike"
-                                                                            className="w-full h-full object-cover grayscale"
+                                                                            className="w-full h-full object-cover"
                                                                         />
                                                                     </div>
                                                                     <div>
@@ -489,7 +489,7 @@ function Dashboard() {
                                                         <img
                                                             src={getBikeImage(rental.bike_details?.id)}
                                                             alt="Bike"
-                                                            className="w-full h-full object-cover grayscale"
+                                                            className="w-full h-full object-cover"
                                                         />
                                                     </div>
                                                     <div>

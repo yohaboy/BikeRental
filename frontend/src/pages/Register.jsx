@@ -45,19 +45,8 @@ function Register() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-            {/* Background Grid Effect */}
-            <div className="absolute inset-0 z-0 opacity-20 pointer-events-none"
-                style={{
-                    backgroundImage: `linear-gradient(to right, var(--color-primary) 1px, transparent 1px), linear-gradient(to bottom, var(--color-primary) 1px, transparent 1px)`,
-                    backgroundSize: '40px 40px'
-                }}
-            ></div>
-
             <div className="max-w-md w-full space-y-8 relative z-10">
                 <div className="text-center">
-                    <div className="mx-auto h-16 w-16 bg-primary flex items-center justify-center text-primary-foreground mb-6">
-                        <Bike size={32} strokeWidth={2} />
-                    </div>
                     <h2 className="text-heading">
                         New User Registration
                     </h2>
@@ -127,8 +116,8 @@ function Register() {
                                 </label>
                                 <div className="grid grid-cols-2 gap-4">
                                     <label className={`cursor-pointer border p-4 flex flex-col items-center justify-center transition-all ${formData.role === 'renter'
-                                            ? 'border-primary bg-primary/5 text-primary'
-                                            : 'border-border hover:border-primary/50 text-muted-foreground'
+                                        ? 'border-primary bg-primary/5 text-primary'
+                                        : 'border-border hover:border-primary/50 text-muted-foreground'
                                         }`}>
                                         <input
                                             type="radio"
@@ -143,8 +132,8 @@ function Register() {
                                     </label>
 
                                     <label className={`cursor-pointer border p-4 flex flex-col items-center justify-center transition-all ${formData.role === 'owner'
-                                            ? 'border-primary bg-primary/5 text-primary'
-                                            : 'border-border hover:border-primary/50 text-muted-foreground'
+                                        ? 'border-primary bg-primary/5 text-primary'
+                                        : 'border-border hover:border-primary/50 text-muted-foreground'
                                         }`}>
                                         <input
                                             type="radio"
@@ -176,7 +165,7 @@ function Register() {
                         <p className="text-xs text-muted-foreground uppercase tracking-wider">
                             Already registered?{' '}
                             <Link to="/login" className="font-bold text-primary hover:text-primary/80 transition-colors">
-                                Access Terminal
+                                Login
                             </Link>
                         </p>
                     </div>
