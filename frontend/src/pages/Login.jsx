@@ -1,114 +1,122 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { AlertCircle, LogIn, Bike } from 'lucide-react';
+import { Bike, ArrowRight } from 'lucide-react';
 
 function Login() {
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
-    const { login } = useAuth();
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
         setError('');
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/login/', {
+            const response = await fetch('http://127.0.0.1:8000/api/token/', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username: email, password }),
             });
 
             if (response.ok) {
                 const data = await response.json();
-                login(data.access, data.refresh);
-                navigate('/');
+                await login(data.access, data.refresh);
+                navigate('/dashboard');
             } else {
-                const errorData = await response.json();
-                setError(errorData.detail || 'Invalid credentials');
+                setError('Invalid credentials');
             }
         } catch (err) {
-            setError('Connection error');
-        } finally {
-            setLoading(false);
+            setError('Something went wrong. Please try again.');
         }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4 bg-background">
-            <div className="w-full max-w-md">
-                <div className="text-center mb-8">
-                    <h1 className="text-2xl font-bold tracking-tight text-foreground">Welcome back</h1>
-                    <p className="text-muted-foreground mt-2">Enter your credentials to access your account</p>
+        <div className="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+            {/* Background Grid Effect */}
+            <div className="absolute inset-0 z-0 opacity-20 pointer-events-none"
+                style={{
+                    backgroundImage: `linear-gradient(to right, var(--color-primary) 1px, transparent 1px), linear-gradient(to bottom, var(--color-primary) 1px, transparent 1px)`,
+                    backgroundSize: '40px 40px'
+                }}
+            ></div>
+
+            <div className="max-w-md w-full space-y-8 relative z-10">
+                <div className="text-center">
+                    <div className="mx-auto h-16 w-16 bg-primary flex items-center justify-center text-primary-foreground mb-6">
+                        <Bike size={32} strokeWidth={2} />
+                    </div>
+                    <h2 className="text-heading">
+                        Access Terminal
+                    </h2>
+                    <p className="mt-2 text-body uppercase tracking-wider">
+                        Enter credentials to proceed
+                    </p>
                 </div>
 
-                <div className="bg-card rounded-xl border border-border/50 shadow-sm p-8">
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                        <div>
-                            <label className="block text-sm font-medium text-foreground mb-1.5">
-                                Username
-                            </label>
-                            <input
-                                type="text"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                className="input-shadow"
-                                placeholder="Enter your username"
-                                required
-                            />
-                        </div>
-
-                        <div>
-                            <div className="flex items-center justify-between mb-1.5">
-                                <label className="block text-sm font-medium text-foreground">
-                                    Password
-                                </label>
-                                <a href="#" className="text-sm font-medium text-primary hover:text-primary/80">
-                                    Forgot password?
-                                </a>
-                            </div>
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="input-shadow"
-                                placeholder="Enter your password"
-                                required
-                            />
-                        </div>
-
+                <div className="tech-card bg-card/80 backdrop-blur-sm shadow-2xl">
+                    <form className="space-y-6" onSubmit={handleSubmit}>
                         {error && (
-                            <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex items-start gap-3">
-                                <AlertCircle size={18} className="text-destructive flex-shrink-0 mt-0.5" />
-                                <p className="text-sm text-destructive font-medium">{error}</p>
+                            <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-3 text-xs font-bold uppercase tracking-wider">
+                                {error}
                             </div>
                         )}
 
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="btn-primary w-full py-2.5"
-                        >
-                            {loading ? (
-                                <span className="flex items-center justify-center gap-2">
-                                    <div className="h-4 w-4 border-2 border-white/50 border-t-white rounded-full animate-spin"></div>
-                                    Logging in...
-                                </span>
-                            ) : (
-                                'Sign In'
-                            )}
-                        </button>
+                        <div className="space-y-4">
+                            <div>
+                                <label htmlFor="email-address" className="block text-xs font-bold text-foreground uppercase tracking-wider mb-1">
+                                    Username
+                                </label>
+                                <input
+                                    id="email-address"
+                                    name="email"
+                                    type="text"
+                                    autoComplete="username"
+                                    required
+                                    className="input-shadow"
+                                    placeholder="ENTER USERNAME"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="password" className="block text-xs font-bold text-foreground uppercase tracking-wider mb-1">
+                                    Password
+                                </label>
+                                <input
+                                    id="password"
+                                    name="password"
+                                    type="password"
+                                    autoComplete="current-password"
+                                    required
+                                    className="input-shadow"
+                                    placeholder="ENTER PASSWORD"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <button
+                                type="submit"
+                                className="btn-primary w-full flex justify-between group"
+                            >
+                                Authenticate
+                                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                            </button>
+                        </div>
                     </form>
 
-                    <div className="mt-6 pt-6 border-t border-border/50 text-center">
-                        <p className="text-sm text-muted-foreground">
-                            Don't have an account?{' '}
-                            <Link to="/register" className="font-semibold text-primary hover:text-primary/80 transition-colors">
-                                Create Account
+                    <div className="mt-6 text-center">
+                        <p className="text-xs text-muted-foreground uppercase tracking-wider">
+                            No access credentials?{' '}
+                            <Link to="/register" className="font-bold text-primary hover:text-primary/80 transition-colors">
+                                Initialize Registration
                             </Link>
                         </p>
                     </div>

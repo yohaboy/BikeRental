@@ -36,24 +36,24 @@
 
 @layer base {
     :root {
-        /* Vibrant Cyan Theme */
-        --background: 180 20% 98%;
-        --foreground: 190 50% 15%;
+        /* Tech Grid Theme */
+        --background: 180 10% 98%;
+        --foreground: 190 50% 10%;
 
         --card: 0 0% 100%;
-        --card-foreground: 190 50% 15%;
+        --card-foreground: 190 50% 10%;
 
         --popover: 0 0% 100%;
-        --popover-foreground: 190 50% 15%;
+        --popover-foreground: 190 50% 10%;
 
         --primary: 186 100% 33%;
         --primary-foreground: 0 0% 100%;
 
-        --secondary: 186 30% 90%;
+        --secondary: 186 20% 92%;
         --secondary-foreground: 186 100% 25%;
 
-        --muted: 180 10% 94%;
-        --muted-foreground: 190 20% 50%;
+        --muted: 180 10% 96%;
+        --muted-foreground: 190 20% 40%;
 
         --accent: 186 100% 33%;
         --accent-foreground: 0 0% 100%;
@@ -61,30 +61,31 @@
         --destructive: 0 84% 60%;
         --destructive-foreground: 0 0% 100%;
 
-        --border: 186 20% 88%;
-        --input: 186 20% 88%;
+        --border: 186 20% 80%;
+        --input: 186 20% 80%;
         --ring: 186 100% 33%;
 
-        --radius: 1rem;
+        --radius: 0;
+        /* Sharp corners */
     }
 
     .dark {
-        --background: 190 50% 10%;
+        --background: 190 50% 5%;
         --foreground: 180 20% 98%;
 
-        --card: 190 50% 13%;
+        --card: 190 50% 8%;
         --card-foreground: 180 20% 98%;
 
-        --popover: 190 50% 13%;
+        --popover: 190 50% 8%;
         --popover-foreground: 180 20% 98%;
 
         --primary: 186 80% 45%;
         --primary-foreground: 0 0% 100%;
 
-        --secondary: 190 30% 20%;
+        --secondary: 190 30% 15%;
         --secondary-foreground: 180 20% 98%;
 
-        --muted: 190 30% 20%;
+        --muted: 190 30% 15%;
         --muted-foreground: 190 20% 65%;
 
         --accent: 186 80% 45%;
@@ -108,43 +109,85 @@
         background-color: hsl(var(--background));
         color: hsl(var(--foreground));
         font-feature-settings: "rlig" 1, "calt" 1;
+        background-image:
+            linear-gradient(to right, rgba(0, 168, 181, 0.05) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(0, 168, 181, 0.05) 1px, transparent 1px);
+        background-size: 40px 40px;
     }
 }
 
 @layer components {
     .card-shadow {
-        @apply shadow-[0_8px_30px_#0000000a] hover:shadow-[0_8px_30px_#00000014] transition-all duration-300;
+        @apply border border-border bg-card shadow-none hover:border-primary/50 transition-colors duration-300;
     }
 
     .btn-primary {
-        @apply inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:bg-primary/90 hover:shadow-primary/40 hover:-translate-y-0.5 active:translate-y-0 active:shadow-sm disabled:pointer-events-none disabled:opacity-50;
+        @apply inline-flex items-center justify-center bg-primary px-6 py-3 text-sm font-bold text-primary-foreground transition-all hover:bg-primary/90 active:translate-y-0 disabled:pointer-events-none disabled:opacity-50 uppercase tracking-wider border border-transparent hover:border-primary-foreground/20;
     }
 
     .btn-secondary {
-        @apply inline-flex items-center justify-center rounded-xl bg-secondary px-6 py-3 text-sm font-bold text-secondary-foreground shadow-sm transition-all hover:bg-secondary/80 hover:-translate-y-0.5 active:translate-y-0 disabled:pointer-events-none disabled:opacity-50;
+        @apply inline-flex items-center justify-center bg-secondary px-6 py-3 text-sm font-bold text-secondary-foreground transition-all hover:bg-secondary/80 active:translate-y-0 disabled:pointer-events-none disabled:opacity-50 uppercase tracking-wider border border-transparent;
     }
 
     .btn-outline {
-        @apply inline-flex items-center justify-center rounded-xl border-2 border-primary/20 bg-transparent px-6 py-3 text-sm font-bold text-primary transition-all hover:border-primary hover:bg-primary/5 active:bg-primary/10 disabled:pointer-events-none disabled:opacity-50;
+        @apply inline-flex items-center justify-center border border-primary/50 bg-transparent px-6 py-3 text-sm font-bold text-primary transition-all hover:border-primary hover:bg-primary/5 active:bg-primary/10 disabled:pointer-events-none disabled:opacity-50 uppercase tracking-wider;
     }
 
     .input-shadow {
-        @apply w-full rounded-xl border border-border bg-background px-4 py-3 text-sm ring-offset-background transition-all placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50;
+        @apply w-full border border-border bg-background px-4 py-3 text-sm ring-offset-background transition-all placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-50 rounded-none;
     }
 
     .badge {
-        @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+        @apply inline-flex items-center border border-border px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-none;
     }
 
     .text-display {
-        @apply text-4xl font-black tracking-tight sm:text-5xl md:text-6xl lg:text-7xl text-foreground;
+        @apply text-3xl font-black tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-foreground uppercase;
     }
 
     .text-heading {
-        @apply text-2xl font-bold tracking-tight sm:text-3xl text-foreground;
+        @apply text-xl font-bold tracking-tight sm:text-2xl text-foreground uppercase;
     }
 
     .text-body {
-        @apply text-base text-muted-foreground leading-relaxed;
+        @apply text-sm text-muted-foreground leading-relaxed;
+    }
+
+    /* Tech Corner Accents */
+    .tech-border {
+        @apply relative border border-border;
+    }
+
+    .tech-border::before {
+        content: '';
+        @apply absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-primary;
+    }
+
+    .tech-border::after {
+        content: '';
+        @apply absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-primary;
+    }
+
+    .tech-border-full {
+        @apply relative border border-border;
+    }
+
+    .tech-border-full::before {
+        content: '';
+        @apply absolute -top-[1px] -left-[1px] w-3 h-3 border-t-2 border-l-2 border-primary;
+    }
+
+    .tech-border-full::after {
+        content: '';
+        @apply absolute -bottom-[1px] -right-[1px] w-3 h-3 border-b-2 border-r-2 border-primary;
+    }
+
+    .tech-card {
+        @apply relative bg-card border border-border p-6;
+    }
+
+    .tech-card::before {
+        content: '';
+        @apply absolute top-0 right-0 w-0 h-0 border-t-[20px] border-r-[20px] border-t-transparent border-r-primary/20;
     }
 }

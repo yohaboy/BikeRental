@@ -1,189 +1,182 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { AlertCircle, UserPlus, User, Bike } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Bike, ArrowRight, User, Key } from 'lucide-react';
 
 function Register() {
     const [formData, setFormData] = useState({
         username: '',
         email: '',
         password: '',
-        password2: '',
-        role: 'renter',
+        role: 'renter' // Default role
     });
     const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
-        if (formData.password !== formData.password2) {
-            setError('Passwords do not match');
-            return;
-        }
-
-        setLoading(true);
-
         try {
             const response = await fetch('http://127.0.0.1:8000/api/register/', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    username: formData.username,
-                    email: formData.email,
-                    password: formData.password,
-                    role: formData.role,
-                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
             });
 
             if (response.ok) {
                 navigate('/login');
             } else {
-                const errorData = await response.json();
-                setError(errorData.error || 'Registration failed');
+                const data = await response.json();
+                setError(JSON.stringify(data));
             }
         } catch (err) {
-            setError('Connection error');
-        } finally {
-            setLoading(false);
+            setError('Something went wrong. Please try again.');
         }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4 bg-background">
-            <div className="w-full max-w-md">
-                <div className="text-center mb-8">
-                    <h1 className="text-2xl font-bold tracking-tight text-foreground">Create an account</h1>
-                    <p className="text-muted-foreground mt-2">Join AddisBike to start your journey</p>
+        <div className="min-h-screen flex items-center justify-center bg-background py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+            {/* Background Grid Effect */}
+            <div className="absolute inset-0 z-0 opacity-20 pointer-events-none"
+                style={{
+                    backgroundImage: `linear-gradient(to right, var(--color-primary) 1px, transparent 1px), linear-gradient(to bottom, var(--color-primary) 1px, transparent 1px)`,
+                    backgroundSize: '40px 40px'
+                }}
+            ></div>
+
+            <div className="max-w-md w-full space-y-8 relative z-10">
+                <div className="text-center">
+                    <div className="mx-auto h-16 w-16 bg-primary flex items-center justify-center text-primary-foreground mb-6">
+                        <Bike size={32} strokeWidth={2} />
+                    </div>
+                    <h2 className="text-heading">
+                        New User Registration
+                    </h2>
+                    <p className="mt-2 text-body uppercase tracking-wider">
+                        Join AddisBike Network
+                    </p>
                 </div>
 
-                <div className="bg-card rounded-xl border border-border/50 shadow-sm p-8">
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                        {/* Role Selection */}
-                        <div>
-                            <label className="block text-sm font-medium text-foreground mb-3">
-                                I want to
-                            </label>
-                            <div className="grid grid-cols-2 gap-3">
-                                <button
-                                    type="button"
-                                    onClick={() => setFormData({ ...formData, role: 'renter' })}
-                                    className={`p-4 rounded-xl border transition-all flex flex-col items-center gap-2 ${formData.role === 'renter'
-                                        ? 'border-primary bg-primary/5 text-primary ring-1 ring-primary'
-                                        : 'border-border hover:border-primary/50 text-muted-foreground hover:bg-muted/50'
-                                        }`}
-                                >
-                                    <User size={24} />
-                                    <span className="text-sm font-semibold">Rent Bikes</span>
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setFormData({ ...formData, role: 'owner' })}
-                                    className={`p-4 rounded-xl border transition-all flex flex-col items-center gap-2 ${formData.role === 'owner'
-                                        ? 'border-primary bg-primary/5 text-primary ring-1 ring-primary'
-                                        : 'border-border hover:border-primary/50 text-muted-foreground hover:bg-muted/50'
-                                        }`}
-                                >
-                                    <Bike size={24} />
-                                    <span className="text-sm font-semibold">List Bikes</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-foreground mb-1.5">
-                                Username
-                            </label>
-                            <input
-                                type="text"
-                                name="username"
-                                value={formData.username}
-                                onChange={handleChange}
-                                className="input-shadow"
-                                placeholder="Choose a username"
-                                required
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-foreground mb-1.5">
-                                Email
-                            </label>
-                            <input
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                className="input-shadow"
-                                placeholder="your@email.com"
-                                required
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-foreground mb-1.5">
-                                    Password
-                                </label>
-                                <input
-                                    type="password"
-                                    name="password"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    className="input-shadow"
-                                    placeholder="Create password"
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-foreground mb-1.5">
-                                    Confirm
-                                </label>
-                                <input
-                                    type="password"
-                                    name="password2"
-                                    value={formData.password2}
-                                    onChange={handleChange}
-                                    className="input-shadow"
-                                    placeholder="Confirm password"
-                                    required
-                                />
-                            </div>
-                        </div>
-
+                <div className="tech-card bg-card/80 backdrop-blur-sm shadow-2xl">
+                    <form className="space-y-6" onSubmit={handleSubmit}>
                         {error && (
-                            <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex items-start gap-3">
-                                <AlertCircle size={18} className="text-destructive flex-shrink-0 mt-0.5" />
-                                <p className="text-sm text-destructive font-medium">{error}</p>
+                            <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-3 text-xs font-bold uppercase tracking-wider break-words">
+                                {error}
                             </div>
                         )}
 
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="btn-primary w-full py-2.5"
-                        >
-                            {loading ? (
-                                <span className="flex items-center justify-center gap-2">
-                                    <div className="h-4 w-4 border-2 border-white/50 border-t-white rounded-full animate-spin"></div>
-                                    Creating account...
-                                </span>
-                            ) : (
-                                'Create Account'
-                            )}
-                        </button>
+                        <div className="space-y-4">
+                            <div>
+                                <label htmlFor="username" className="block text-xs font-bold text-foreground uppercase tracking-wider mb-1">
+                                    Username
+                                </label>
+                                <input
+                                    id="username"
+                                    name="username"
+                                    type="text"
+                                    required
+                                    className="input-shadow"
+                                    placeholder="CHOOSE USERNAME"
+                                    value={formData.username}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="email" className="block text-xs font-bold text-foreground uppercase tracking-wider mb-1">
+                                    Email Address
+                                </label>
+                                <input
+                                    id="email"
+                                    name="email"
+                                    type="email"
+                                    required
+                                    className="input-shadow"
+                                    placeholder="ENTER EMAIL"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="password" className="block text-xs font-bold text-foreground uppercase tracking-wider mb-1">
+                                    Password
+                                </label>
+                                <input
+                                    id="password"
+                                    name="password"
+                                    type="password"
+                                    required
+                                    className="input-shadow"
+                                    placeholder="CREATE PASSWORD"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-foreground uppercase tracking-wider mb-2">
+                                    Account Type
+                                </label>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <label className={`cursor-pointer border p-4 flex flex-col items-center justify-center transition-all ${formData.role === 'renter'
+                                            ? 'border-primary bg-primary/5 text-primary'
+                                            : 'border-border hover:border-primary/50 text-muted-foreground'
+                                        }`}>
+                                        <input
+                                            type="radio"
+                                            name="role"
+                                            value="renter"
+                                            checked={formData.role === 'renter'}
+                                            onChange={handleChange}
+                                            className="sr-only"
+                                        />
+                                        <User size={24} className="mb-2" />
+                                        <span className="text-xs font-bold uppercase tracking-wider">Renter</span>
+                                    </label>
+
+                                    <label className={`cursor-pointer border p-4 flex flex-col items-center justify-center transition-all ${formData.role === 'owner'
+                                            ? 'border-primary bg-primary/5 text-primary'
+                                            : 'border-border hover:border-primary/50 text-muted-foreground'
+                                        }`}>
+                                        <input
+                                            type="radio"
+                                            name="role"
+                                            value="owner"
+                                            checked={formData.role === 'owner'}
+                                            onChange={handleChange}
+                                            className="sr-only"
+                                        />
+                                        <Key size={24} className="mb-2" />
+                                        <span className="text-xs font-bold uppercase tracking-wider">Owner</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <button
+                                type="submit"
+                                className="btn-primary w-full flex justify-between group"
+                            >
+                                Create Account
+                                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                            </button>
+                        </div>
                     </form>
 
-                    <div className="mt-6 pt-6 border-t border-border/50 text-center">
-                        <p className="text-sm text-muted-foreground">
-                            Already have an account?{' '}
-                            <Link to="/login" className="font-semibold text-primary hover:text-primary/80 transition-colors">
-                                Sign In
+                    <div className="mt-6 text-center">
+                        <p className="text-xs text-muted-foreground uppercase tracking-wider">
+                            Already registered?{' '}
+                            <Link to="/login" className="font-bold text-primary hover:text-primary/80 transition-colors">
+                                Access Terminal
                             </Link>
                         </p>
                     </div>

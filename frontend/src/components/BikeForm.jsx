@@ -1,204 +1,173 @@
 import React, { useState } from 'react';
-import { Bike as BikeIcon, DollarSign, Tag, Info, CheckCircle } from 'lucide-react';
+import { X, Upload, DollarSign, Tag, FileText, Type } from 'lucide-react';
 
-const BikeForm = ({ onSuccess }) => {
+function BikeForm({ onSuccess }) {
     const [formData, setFormData] = useState({
         brand: '',
         model: '',
-        type: 'city',
+        type: 'road',
         price_per_hour: '',
+        condition: 'new',
+        description: ''
     });
-    const [submitting, setSubmitting] = useState(false);
-    const [success, setSuccess] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
-
-    const apiCall = async (url, options = {}) => {
-        const makeRequest = async (token) => {
-            const response = await fetch(url, {
-                ...options,
-                headers: {
-                    ...options.headers,
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            return response;
-        };
-
-        let accessToken = localStorage.getItem('access_token');
-        let response = await makeRequest(accessToken);
-
-        if (response.status === 401) {
-            const refreshToken = localStorage.getItem('refresh_token');
-            if (refreshToken) {
-                try {
-                    const refreshResponse = await fetch('http://127.0.0.1:8000/api/token/refresh/', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ refresh: refreshToken }),
-                    });
-
-                    if (refreshResponse.ok) {
-                        const data = await refreshResponse.json();
-                        localStorage.setItem('access_token', data.access);
-                        response = await makeRequest(data.access);
-                    } else {
-                        localStorage.removeItem('access_token');
-                        localStorage.removeItem('refresh_token');
-                        window.location.href = '/login';
-                        return null;
-                    }
-                } catch (error) {
-                    localStorage.removeItem('access_token');
-                    localStorage.removeItem('refresh_token');
-                    window.location.href = '/login';
-                    return null;
-                }
-            } else {
-                localStorage.removeItem('access_token');
-                localStorage.removeItem('refresh_token');
-                window.location.href = '/login';
-                return null;
-            }
-        }
-        return response;
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setSubmitting(true);
+        setLoading(true);
+        setError('');
+
         try {
-            const response = await apiCall('http://127.0.0.1:8000/api/my_bikes/', {
+            const token = localStorage.getItem('access_token');
+            const response = await fetch('http://127.0.0.1:8000/api/bikes/', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify(formData),
             });
 
-            if (response && response.ok) {
-                setSuccess(true);
-                setTimeout(() => {
-                    setSuccess(false);
-                    if (onSuccess) onSuccess();
-                }, 1500);
+            if (response.ok) {
+                onSuccess();
+            } else {
+                const data = await response.json();
+                setError(JSON.stringify(data));
             }
-        } catch (error) {
-            console.error('Error adding bike:', error);
+        } catch (err) {
+            setError('Failed to add bike. Please try again.');
         } finally {
-            setSubmitting(false);
+            setLoading(false);
         }
     };
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                    <label className="text-sm font-medium text-foreground">
-                        Brand
-                    </label>
-                    <div className="relative">
-                        <Tag className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
-                        <input
-                            type="text"
-                            name="brand"
-                            value={formData.brand}
-                            onChange={handleChange}
-                            placeholder="e.g. Trek"
-                            className="input-shadow pl-10"
-                            required
-                        />
-                    </div>
-                </div>
-                <div className="space-y-2">
-                    <label className="text-sm font-medium text-foreground">
-                        Model
-                    </label>
-                    <div className="relative">
-                        <Info className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
-                        <input
-                            type="text"
-                            name="model"
-                            value={formData.model}
-                            onChange={handleChange}
-                            placeholder="e.g. Domane"
-                            className="input-shadow pl-10"
-                            required
-                        />
-                    </div>
-                </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                    <label className="text-sm font-medium text-foreground">
-                        Type
-                    </label>
-                    <div className="relative">
-                        <BikeIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
-                        <select
-                            name="type"
-                            value={formData.type}
-                            onChange={handleChange}
-                            className="input-shadow pl-10 appearance-none"
-                            required
-                        >
-                            <option value="city">City</option>
-                            <option value="mountain">Mountain</option>
-                            <option value="road">Road</option>
-                            <option value="electric">Electric</option>
-                        </select>
-                    </div>
-                </div>
-                <div className="space-y-2">
-                    <label className="text-sm font-medium text-foreground">
-                        Price per Hour
-                    </label>
-                    <div className="relative">
-                        <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
-                        <input
-                            type="number"
-                            step="0.01"
-                            name="price_per_hour"
-                            value={formData.price_per_hour}
-                            onChange={handleChange}
-                            placeholder="0.00"
-                            className="input-shadow pl-10"
-                            required
-                        />
-                    </div>
-                </div>
-            </div>
-
-            {success && (
-                <div className="bg-emerald-50 text-emerald-600 border border-emerald-200 p-4 rounded-lg flex items-center gap-3 font-medium text-sm">
-                    <CheckCircle size={20} />
-                    Bike listed successfully!
+            {error && (
+                <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-3 text-xs font-bold uppercase tracking-wider">
+                    {error}
                 </div>
             )}
 
-            <button
-                type="submit"
-                disabled={submitting || success}
-                className="btn-primary w-full py-2.5"
-            >
-                {submitting ? (
-                    <span className="flex items-center justify-center gap-2">
-                        <div className="h-4 w-4 border-2 border-white/50 border-t-white rounded-full animate-spin"></div>
-                        Listing...
-                    </span>
-                ) : success ? (
-                    <span className="flex items-center justify-center gap-2">
-                        <CheckCircle size={18} />
-                        Done
-                    </span>
-                ) : (
-                    'List Bike'
-                )}
-            </button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label className="block text-xs font-bold text-foreground uppercase tracking-wider mb-1">
+                        Brand
+                    </label>
+                    <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Tag size={16} className="text-muted-foreground" />
+                        </div>
+                        <input
+                            type="text"
+                            name="brand"
+                            required
+                            value={formData.brand}
+                            onChange={handleChange}
+                            className="input-shadow pl-10"
+                            placeholder="TREK"
+                        />
+                    </div>
+                </div>
+
+                <div>
+                    <label className="block text-xs font-bold text-foreground uppercase tracking-wider mb-1">
+                        Model
+                    </label>
+                    <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Type size={16} className="text-muted-foreground" />
+                        </div>
+                        <input
+                            type="text"
+                            name="model"
+                            required
+                            value={formData.model}
+                            onChange={handleChange}
+                            className="input-shadow pl-10"
+                            placeholder="MARLIN 5"
+                        />
+                    </div>
+                </div>
+
+                <div>
+                    <label className="block text-xs font-bold text-foreground uppercase tracking-wider mb-1">
+                        Type
+                    </label>
+                    <select
+                        name="type"
+                        value={formData.type}
+                        onChange={handleChange}
+                        className="input-shadow appearance-none cursor-pointer"
+                    >
+                        <option value="road">ROAD</option>
+                        <option value="mountain">MOUNTAIN</option>
+                        <option value="hybrid">HYBRID</option>
+                        <option value="electric">ELECTRIC</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label className="block text-xs font-bold text-foreground uppercase tracking-wider mb-1">
+                        Price per Hour ($)
+                    </label>
+                    <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <DollarSign size={16} className="text-muted-foreground" />
+                        </div>
+                        <input
+                            type="number"
+                            name="price_per_hour"
+                            required
+                            min="0"
+                            step="0.01"
+                            value={formData.price_per_hour}
+                            onChange={handleChange}
+                            className="input-shadow pl-10"
+                            placeholder="0.00"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <label className="block text-xs font-bold text-foreground uppercase tracking-wider mb-1">
+                    Description
+                </label>
+                <div className="relative">
+                    <div className="absolute top-3 left-3 pointer-events-none">
+                        <FileText size={16} className="text-muted-foreground" />
+                    </div>
+                    <textarea
+                        name="description"
+                        rows="3"
+                        value={formData.description}
+                        onChange={handleChange}
+                        className="input-shadow pl-10 resize-none"
+                        placeholder="ENTER UNIT DETAILS..."
+                    ></textarea>
+                </div>
+            </div>
+
+            <div className="pt-2">
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className="btn-primary w-full"
+                >
+                    {loading ? 'PROCESSING...' : 'ADD UNIT TO FLEET'}
+                </button>
+            </div>
         </form>
     );
-};
+}
 
 export default BikeForm;

@@ -15,15 +15,15 @@ function NavBar() {
     };
 
     return (
-        <nav className="bg-white/80 backdrop-blur-md border-b border-border sticky top-0 z-50">
+        <nav className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     {/* Logo */}
-                    <Link to="/" className="flex items-center gap-2.5 group">
-                        <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20 transition-transform group-hover:scale-105">
-                            <Bike size={20} strokeWidth={2.5} />
+                    <Link to="/" className="flex items-center gap-3 group">
+                        <div className="w-8 h-8 bg-primary flex items-center justify-center text-primary-foreground transition-transform group-hover:scale-105">
+                            <Bike size={18} strokeWidth={2.5} />
                         </div>
-                        <span className="font-bold text-xl tracking-tight text-foreground">
+                        <span className="font-bold text-lg tracking-widest text-foreground uppercase">
                             AddisBike
                         </span>
                     </Link>
@@ -32,36 +32,36 @@ function NavBar() {
                     <div className="hidden md:flex items-center gap-8">
                         <Link
                             to="/"
-                            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                            className="text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
                         >
                             Home
                         </Link>
                         <Link
                             to="/about"
-                            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                            className="text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
                         >
                             About
                         </Link>
                         <Link
                             to="/contact"
-                            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                            className="text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
                         >
                             Contact
                         </Link>
 
-                        <div className="h-5 w-px bg-border/60"></div>
+                        <div className="h-4 w-px bg-border"></div>
 
                         {user ? (
                             <>
                                 <Link
                                     to="/dashboard"
-                                    className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                                    className="text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
                                 >
                                     Dashboard
                                 </Link>
                                 <button
                                     onClick={handleLogout}
-                                    className="text-sm font-medium text-muted-foreground hover:text-destructive transition-colors"
+                                    className="text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-destructive transition-colors"
                                 >
                                     Logout
                                 </button>
@@ -70,13 +70,13 @@ function NavBar() {
                             <>
                                 <Link
                                     to="/login"
-                                    className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                                    className="text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors"
                                 >
                                     Login
                                 </Link>
                                 <Link
                                     to="/register"
-                                    className="btn-primary shadow-lg shadow-primary/20"
+                                    className="btn-primary px-4 py-2 text-xs"
                                 >
                                     Sign Up
                                 </Link>
@@ -84,13 +84,13 @@ function NavBar() {
                         )}
                     </div>
 
-                    {/* Mobile menu button - Only one icon on the right */}
+                    {/* Mobile menu button */}
                     <button
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                        className="md:hidden p-2 rounded-lg text-muted-foreground hover:bg-muted/50 transition-colors"
+                        className="md:hidden p-2 text-muted-foreground hover:bg-muted transition-colors border border-transparent hover:border-border"
                         aria-label="Toggle menu"
                     >
-                        {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                        {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
                     </button>
                 </div>
             </div>
@@ -98,43 +98,43 @@ function NavBar() {
             {/* Mobile Menu Overlay */}
             {mobileMenuOpen && (
                 <div className="md:hidden absolute top-16 left-0 right-0 bg-background border-b border-border shadow-xl animate-in slide-in-from-top-2 duration-200">
-                    <div className="px-4 py-6 space-y-3">
+                    <div className="p-4 space-y-2">
                         <Link
                             to="/"
                             onClick={() => setMobileMenuOpen(false)}
-                            className="block px-4 py-3 rounded-xl text-base font-medium text-foreground hover:bg-muted/50 transition-colors"
+                            className="block px-4 py-3 border border-transparent hover:border-border hover:bg-muted/50 text-sm font-bold uppercase tracking-wider text-foreground transition-colors"
                         >
                             Home
                         </Link>
                         <Link
                             to="/about"
                             onClick={() => setMobileMenuOpen(false)}
-                            className="block px-4 py-3 rounded-xl text-base font-medium text-foreground hover:bg-muted/50 transition-colors"
+                            className="block px-4 py-3 border border-transparent hover:border-border hover:bg-muted/50 text-sm font-bold uppercase tracking-wider text-foreground transition-colors"
                         >
                             About
                         </Link>
                         <Link
                             to="/contact"
                             onClick={() => setMobileMenuOpen(false)}
-                            className="block px-4 py-3 rounded-xl text-base font-medium text-foreground hover:bg-muted/50 transition-colors"
+                            className="block px-4 py-3 border border-transparent hover:border-border hover:bg-muted/50 text-sm font-bold uppercase tracking-wider text-foreground transition-colors"
                         >
                             Contact
                         </Link>
 
-                        <div className="my-4 border-t border-border/50"></div>
+                        <div className="my-2 border-t border-border"></div>
 
                         {user ? (
                             <>
                                 <Link
                                     to="/dashboard"
                                     onClick={() => setMobileMenuOpen(false)}
-                                    className="block px-4 py-3 rounded-xl text-base font-medium text-foreground hover:bg-muted/50 transition-colors"
+                                    className="block px-4 py-3 border border-transparent hover:border-border hover:bg-muted/50 text-sm font-bold uppercase tracking-wider text-foreground transition-colors"
                                 >
                                     Dashboard
                                 </Link>
                                 <button
                                     onClick={handleLogout}
-                                    className="block w-full text-left px-4 py-3 rounded-xl text-base font-medium text-destructive hover:bg-destructive/10 transition-colors"
+                                    className="block w-full text-left px-4 py-3 border border-transparent hover:border-destructive/20 hover:bg-destructive/5 text-sm font-bold uppercase tracking-wider text-destructive transition-colors"
                                 >
                                     Logout
                                 </button>
@@ -144,14 +144,14 @@ function NavBar() {
                                 <Link
                                     to="/login"
                                     onClick={() => setMobileMenuOpen(false)}
-                                    className="block px-4 py-3 rounded-xl text-base font-medium text-foreground hover:bg-muted/50 transition-colors"
+                                    className="block px-4 py-3 border border-transparent hover:border-border hover:bg-muted/50 text-sm font-bold uppercase tracking-wider text-foreground transition-colors"
                                 >
                                     Login
                                 </Link>
                                 <Link
                                     to="/register"
                                     onClick={() => setMobileMenuOpen(false)}
-                                    className="block px-4 py-3 mt-2 text-center rounded-xl text-base font-bold bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:bg-primary/90 transition-colors"
+                                    className="block px-4 py-3 mt-2 text-center text-sm font-bold uppercase tracking-wider bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                                 >
                                     Sign Up
                                 </Link>
